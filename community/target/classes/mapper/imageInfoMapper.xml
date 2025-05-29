@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="www.silver.mapper.ImageInfoMapper">
+    <insert id="saveImageInfo" parameterType="www.silver.vo.ImageInfoVO">
+        INSERT INTO image_info_table (s3_url, original_file_name) <!-- 실제 테이블명으로 변경 -->
+        VALUES (#{s3Url}, #{originalFileName})
+    </insert>
+</mapper>

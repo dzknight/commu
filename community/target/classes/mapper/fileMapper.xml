@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 첨부파일 매퍼 -->
+<mapper namespace="fileMapper">
+    
+    <insert id="insertFile" parameterType="www.silver.vo.FileAttachVO">
+        INSERT INTO file_attach (
+            uuid, 
+            upload_path, 
+            filename, 
+            filetype, 
+            file_size,
+            member_id,
+            upload_date
+        ) VALUES (
+            #{uuid}, 
+            #{uploadPath}, 
+            #{filename}, 
+            #{filetype}, 
+            #{fileSize},
+            #{memberId},
+            NOW()
+        )
+    </insert>
+    
+    <select id="selectFileList" resultType="www.silver.vo.FileAttachVO">
+        SELECT 
+            id,
+            uuid,
+            upload_path as uploadPath,
+            filename,
+            filetype,
+            file_size as fileSize,
+            upload_date as uploadDate
+        FROM file_attach 
+        ORDER BY upload_date DESC
+    </select>
+    
+        <select id="selectFileByMemberId" parameterType="String" resultType="www.silver.vo.FileAttachVO">
+        SELECT 
+            id,
+            uuid,
+            upload_path as uploadPath,
+            filename,
+            filetype,
+            file_size as fileSize,
+            member_id as memberId,
+            upload_date as uploadDate
+        FROM file_attach 
+        WHERE member_id = #{memberId}
+    </select>
+    
+</mapper>

@@ -1,0 +1,18 @@
+@charset "UTF-8";
+body{
+    width: 1280px;   /* 1024, 1280*/
+  /*  background-color: blue;*/
+}
+nav span{
+    border: 1px solid;
+}
+header{
+    width: 800px;   /* 1024, 1280*/
+    height: 50px;
+    /*background-color: yellow;*/
+}
+nav {
+    width: 800px;  
+    height: 20px;
+    /*background-color: green;*/
+}

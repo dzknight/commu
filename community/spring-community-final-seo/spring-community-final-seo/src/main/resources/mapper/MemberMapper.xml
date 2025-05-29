@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="www.silver.dao.IF_MemberDAO">
+	<insert id="insertOne" parameterType="www.silver.vo.MemberVO">	
+	INSERT INTO `sys`.`member` (`member_id`, `name`, `password`, `address`,`detailaddress`,`fullemail`, `fullphonenumber`, `zipcode`, `reg_date`, `birth_date`) VALUES
+ (#{userid}, #{username}, #{password}, #{address},#{detailAddress},#{fullEmail}, #{fullPhoneNumber}, #{zipcode}, default, #{birthdate})	
+	</insert>
+	<select id="selectOne" resultType="www.silver.vo.MemberVO" parameterType="String" >
+		select * from `sys`.`member` where member_id=#{userid}
+	</select>
+
+</mapper>

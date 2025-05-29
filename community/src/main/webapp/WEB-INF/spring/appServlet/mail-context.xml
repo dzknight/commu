@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd">
+       
+		<bean id="mailSender"   class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		    <property name="host" value="smtp.naver.com" />
+		    <!-- naver SMTP 메일 서버 포트 -->
+		    <property name="port" value="465" />
+		    <!-- 자신의 메일, 비밀번호 설정 -->
+		    <property name="username" value="dzknight11@naver.com"/>
+		    <property name="password" value="qwer1471"/>
+		    <!-- 메일 전달 프로토콜 세부 속성 설정 -->
+		    <property name="javaMailProperties">
+		        <props>
+		            <prop key="mail.transport.protocol">smtp</prop>
+		            <prop key="mail.smtp.auth">true</prop>
+		            <prop key="mail.smtp.starttls.enable">true</prop>
+		            <prop key="mail.debug">true</prop>
+					<prop key="mail.smtp.ssl.trust">smtp.naver.com</prop>
+					<prop key="mail.smtp.ssl.enable">true</prop>
+					<prop key="mail.smtp.ssl.protocols">TLSv1.2</prop>
+		        </props>
+		    </property>
+		</bean>
+</beans>
