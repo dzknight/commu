@@ -10,6 +10,176 @@
 <title>Community Header</title>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+@charset "UTF-8";
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Noto Sans KR', Arial, sans-serif;
+    background-color: #f8f9fa;
+    color: #343a40;
+    line-height: 1.6;
+}
+
+/* 헤더 스타일 */
+.header {
+    background-color: #fff;
+    padding: 15px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+}
+.header-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+.logo-img {
+    height: 36px;
+}
+.login-area {
+    display: flex;
+    align-items: center;
+}
+.login-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+}
+.input-field {
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 140px;
+    transition: border-color 0.2s;
+}
+.input-field:focus {
+    outline: none;
+    border-color: #007bff;
+}
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color 0.2s;
+}
+.btn-login, .btn-search, .btn-success {
+    background-color: #007bff;
+}
+.btn-signup, .btn-mypage {
+    background-color: #28a745;
+}
+.btn-logout, .btn-warning {
+    background-color: #dc3545;
+}
+.btn:hover {
+    filter: brightness(90%);
+}
+.btn-postLike {
+    background-color: #ff6b6b;
+}
+.btn-postLike:hover {
+    background-color: #e63946;
+}
+
+/* 검색 바 스타일 */
+.search-bar {
+    background-color: #fff;
+    padding: 12px 0;
+    border-bottom: 1px solid #e9ecef;
+    width: 100%;
+}
+.search-form {
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.select-field {
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 120px;
+}
+.search-form .input-field {
+    width: 100%;
+    max-width: 300px;
+}
+
+/* 네비게이션 스타일 */
+.nav {
+    background-color: #fff;
+    padding: 12px 0;
+    border-bottom: 1px solid #e9ecef;
+    width: 100%;
+}
+.nav-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+.nav-menu {
+    list-style: none;
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+}
+.nav-menu li a {
+    text-decoration: none;
+    color: #495057;
+    font-size: 16px;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+.nav-menu li a:hover {
+    color: #007bff;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 900px) {
+    .header-inner, .search-form, .login-form {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    .login-form .input-field, .login-form .btn {
+        width: 100%;
+    }
+    .search-form .input-field, .search-form .select-field, .search-form .btn {
+        width: 100%;
+    }
+    .nav-menu {
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+}
+</style>
 <script>
 <c:if test="${not empty message}">
     alert('${message}');
