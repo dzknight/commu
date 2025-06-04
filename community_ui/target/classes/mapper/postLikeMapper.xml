@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="www.silver.dao.IF_likesDAO">
+
+	<!-- 게시글 좋아요 등록 -->
+	<insert id="postLike" parameterType="www.silver.vo.LikeVO"
+		useGeneratedKeys="true" keyProperty="likeNum">
+		INSERT INTO likes (user_id, postNum)
+		VALUES (#{userId}, #{postNum})
+	</insert>
+
+	<!-- 게시글 좋아요 상태 확인 -->
+	<select id="getMyLikeCount" parameterType="www.silver.vo.LikeVO" resultType="int">
+		SELECT COUNT(*) 
+		FROM likes 
+		WHERE postNum = #{postNum} AND user_id = #{userId}
+	</select>
+
+	<!-- 게시글 좋아요 취소 -->
+	<delete id="deleteLike" parameterType="www.silver.vo.LikeVO">
+		DELETE FROM likes 
+		WHERE postNum = #{postNum} AND user_id = #{userId}
+	</delete>
+
+	<!-- 게시글 좋아요 총 갯수 -->
+	<select id="getTotalLikeCount" parameterType="int" resultType="int">
+		SELECT COUNT(*) 
+		FROM likes 
+		WHERE postNum = #{postNum}
+	</select>
+
+</mapper>
