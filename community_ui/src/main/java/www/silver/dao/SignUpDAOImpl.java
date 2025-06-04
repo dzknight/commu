@@ -62,4 +62,10 @@ public class SignUpDAOImpl implements IF_signUpDAO {
 		// TODO Auto-generated method stub
 		return sqlSession.update("www.silver.dao.IF_signUpDAO.updateMember", memberVO);
 	}
+
+	@Override
+	public void deleteMember(String userid) {
+		// TODO Auto-generated method stub
+		sqlSession.delete("www.silver.dao.IF_signUpDAO.deleteMember", userid);
+	}
 }

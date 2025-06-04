@@ -8,7 +8,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Community Header</title>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <style>
 @charset "UTF-8";
@@ -216,16 +215,13 @@ $(document).ready(function() {
         <a href="${pageContext.request.contextPath}/" class="logo">
             <p class="logo-img">BugBuster</p>
         </a>
-        <a href="${pageContext.request.contextPath}/passreset" class="btn btn-mypage"><i class="fas fa-user"></i> 비번 재설정</a> 
-        <a href="${pageContext.request.contextPath}/memberview" class="btn btn-mypage"><i class="fas fa-user"></i> 회원정보수정(비번 제외)</a> 
+        
         <div class="login-area">
             <c:choose>
                 <c:when test="${not empty sessionScope.loginUser}">
-          
                     <div class="user-info">
                         <span class="user-id"><strong>${sessionScope.loginUser.userId}</strong>님</span>
                         <a href="${pageContext.request.contextPath}/mypage" class="btn btn-mypage"><i class="fas fa-user"></i> 마이페이지</a> 
-                       
                         <a href="${pageContext.request.contextPath}/logout" class="btn btn-logout"><i class="fas fa-sign-out-alt"></i> 로그아웃</a>
                     </div>
                 </c:when>

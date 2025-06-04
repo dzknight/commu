@@ -16,5 +16,5 @@ public interface IF_signUpDAO {
 	public MemberVO selectByUserId(String userId) throws Exception;
 	
     public int updateMember(MemberVO memberVO) throws Exception;
-
+    public void deleteMember(String userid);
 }

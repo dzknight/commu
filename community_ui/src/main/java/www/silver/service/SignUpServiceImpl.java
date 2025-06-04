@@ -86,4 +86,10 @@ public class SignUpServiceImpl implements IF_signUpService {
         
         return savedName;
     }
+
+	@Override
+	public void deleteMember(String userid) {
+		// TODO Auto-generated method stub
+		signupdao.deleteMember(userid);
+	}
 }

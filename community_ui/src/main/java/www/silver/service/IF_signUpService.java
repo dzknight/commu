@@ -23,4 +23,5 @@ public interface IF_signUpService {
 	public int updateMember(MemberVO memberVO) throws Exception;
 	
 	public String uploadFile(MultipartFile file, String uploadPath) throws Exception;
+	void deleteMember(String userid);
 }

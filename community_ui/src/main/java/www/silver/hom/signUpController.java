@@ -31,7 +31,7 @@ public class signUpController {
     
     // 파일 업로드 경로 설정
     //private static final String UPLOAD_PATH = "C:/upload/profile/";
-    private static final String UPLOAD_PATH = "D:/sts_src1/community_ui/src/main/webapp/resources/uploads/";
+    private static final String UPLOAD_PATH = "D:/community0604/src/main/webapp/resources/uploads";
     // 회원가입 폼 표시
     @GetMapping("/signup")
     public String signUpMember(@ModelAttribute MemberVO membervo) {

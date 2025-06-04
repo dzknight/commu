@@ -10,7 +10,6 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script
 	src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-
 <style>
 body {
 	font-family: sans-serif;
@@ -407,15 +406,17 @@ $(document).ready(function() {
 					<div id="passwordCheck1"></div></td>
 			</tr>
 			<tr>
-				<td><label for="userPasswordConfirm">비밀번호 확인</label> <input
-					type="password" name="userPasswordConfirm" id="userPasswordConfirm"
-					placeholder="비밀번호를 한 번 더 입력하세요" required>
-					<div id="passwordCheck2"></div></td>
+				<td>
+					<label for="userPasswordConfirm">비밀번호 확인</label> 
+					<input type="password" name="userPasswordConfirm" id="userPasswordConfirm" placeholder="비밀번호를 한 번 더 입력하세요" required>
+					<div id="passwordCheck2"></div>
+				</td>
 			</tr>
 
 			<tr>
-				<td><label for="userName">이름</label> <input type="text"
-					name="userName" id="userName" placeholder="이름을 입력하세요" required>
+				<td>
+					<label for="userName">이름</label> 
+					<input type="text" name="userName" id="userName" placeholder="이름을 입력하세요" required>
 				</td>
 			</tr>
 			<tr>
@@ -470,7 +471,7 @@ $(document).ready(function() {
 		</table>
         <div class="form-group">
             <label for =birthdate>생년월일:</label>
-        </div>    
+        </div>
         <div class="inline">
             <input type="date" name="birthdate" id="birthdate"   required />
         </div>
@@ -482,16 +483,18 @@ $(document).ready(function() {
         
 	</form>
 </body>
-						<script>
-						 document.getElementById('email_domain').addEventListener('change', function() {
-							    const selectedValue = this.value;
-							    document.getElementById('email_domain_input').value = selectedValue; // 이메일 도메인 필드에 설정
-							});
-						 document.getElementById('email_id').addEventListener('input', function() {
-							    const emailId = this.value;
-							    const emailDomain = document.getElementById('email_domain_input').value;
-							    document.getElementById('fullEmail').value = emailId + '@' + emailDomain; // 전체 이메일을 업데이트
-							}); 
-
-						</script>
+<script>
+	document.getElementById('email_domain').addEventListener('change', function() {
+		const selectedValue = this.value;
+		document.getElementById('email_domain_input').value = selectedValue; // 이메일 도메인 필드에 설정
+		// 이메일 전체값도 즉시 갱신
+		const emailId = document.getElementById('email_id').value;
+		document.getElementById('fullEmail').value = emailId + '@' + selectedValue;
+	});
+	document.getElementById('email_id').addEventListener('input', function() {
+		const emailId = this.value;
+		const emailDomain = document.getElementById('email_domain_input').value;
+		document.getElementById('fullEmail').value = emailId + '@' + emailDomain; // 전체 이메일을 업데이트
+	});
+</script>
 </html>
