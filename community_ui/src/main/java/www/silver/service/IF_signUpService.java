@@ -1,5 +1,7 @@
 package www.silver.service;
 
+import javax.mail.MessagingException;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import www.silver.vo.MemberVO;
@@ -23,5 +25,11 @@ public interface IF_signUpService {
 	public int updateMember(MemberVO memberVO) throws Exception;
 	
 	public String uploadFile(MultipartFile file, String uploadPath) throws Exception;
+	
 	void deleteMember(String userid);
+	
+	public void sendEmailVerification(String email) throws MessagingException, Exception;
+	 
+	public void registerMember(MemberVO membervo, String certificationNumber) throws Exception;
+	
 }

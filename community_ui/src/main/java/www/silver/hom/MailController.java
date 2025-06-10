@@ -37,7 +37,7 @@ public class MailController {
 
         try {
             MailVO mailvo = new MailVO();
-            mailvo.setFromaddress("kkk98000@naver.com");
+            mailvo.setFromaddress("dzknight@naver.com");
             mailvo.setAddress(address);
             mailvo.setTitle(title);
             mailvo.setMessage(message);

@@ -31,7 +31,7 @@ public class signUpController {
     
     // 파일 업로드 경로 설정
     //private static final String UPLOAD_PATH = "C:/upload/profile/";
-    private static final String UPLOAD_PATH = "D:/community0604/src/main/webapp/resources/uploads";
+    private static final String UPLOAD_PATH = "D:/community0604/src/main/webapp/resources/uploads/";
     // 회원가입 폼 표시
     @GetMapping("/signup")
     public String signUpMember(@ModelAttribute MemberVO membervo) {
@@ -41,7 +41,7 @@ public class signUpController {
 
     // 회원가입 처리
     @PostMapping("/join")
-    public String join( MemberVO membervo,  @RequestParam("userPasswordConfirm") String userPasswordConfirm, @RequestParam("fullEmail") String fullemail,  Model model) {
+    public String join( MemberVO membervo,  @RequestParam("userPasswordConfirm") String userPasswordConfirm, @RequestParam("fullEmail") String fullemail,RedirectAttributes redirectAttributes,  Model model) {
         System.out.println("Received MemberVO: " + membervo);
         System.out.println("Received userPasswordConfirm: " + userPasswordConfirm); 
         System.out.println(membervo.getDetailAddress()); 
@@ -61,14 +61,14 @@ public class signUpController {
             return "join/signup"; // 회원가입 폼으로 이동
         }
         try {
-     	// 프로필 이미지 처리
             MultipartFile file = membervo.getProfileImageFile();
             if (file != null && !file.isEmpty()) {
                 String savedFileName = saveProfileImage(file);
                 membervo.setProfileImagePath(savedFileName);
             }
         } catch(Exception  e){
-     	   
+        	  redirectAttributes.addFlashAttribute("error", "프로필 이미지 처리 중 오류가 발생했습니다: " + e.getMessage());
+        	  return "join/signup"; // WEB-INF/views/join/signup.jsp
         }
         // 회원가입 로직 수행
         signupservice.insert(membervo);

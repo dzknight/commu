@@ -15,6 +15,8 @@ public class SignUpDAOImpl implements IF_signUpDAO {
 
     @Inject
     private SqlSession sqlSession;
+    
+    private final String NAMESPACE="www.silver.dao.IF_signUpDAO.";
 
     @Override
     public void insertAccount(MemberVO membervo) {
@@ -68,4 +70,18 @@ public class SignUpDAOImpl implements IF_signUpDAO {
 		// TODO Auto-generated method stub
 		sqlSession.delete("www.silver.dao.IF_signUpDAO.deleteMember", userid);
 	}
+
+	@Override
+	public int checkEmailDuplicate(String fullEmail) throws Exception {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(NAMESPACE+"checkEmailDuplicate", fullEmail);
+	}
+
+	@Override
+	public MemberVO selectByEmail(String fullEmail) throws Exception {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(NAMESPACE+"selectByEmail", fullEmail);
+	}
+    
+
 }
