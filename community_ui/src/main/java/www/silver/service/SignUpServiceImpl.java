@@ -110,14 +110,14 @@ public class SignUpServiceImpl implements IF_signUpService {
 	}
 
 	@Override
-	public void sendEmailVerification(String email) throws Exception {
+	public void sendEmailVerification(String fullEmail) throws Exception {
 		// TODO Auto-generated method stub
 		  // 이메일 중복 체크
-        if (signupdao.checkEmailDuplicate(email) > 0) {
-            throw new RuntimeException("이미 가입된 이메일입니다.");
-        }
+       // if (signupdao.checkEmailDuplicate(fullEmail) > 0) {
+       //     throw new RuntimeException("이미 가입된 이메일입니다.");
+       // }
         //인증번호 이메일 전송 리턴 없음
-        emailservice.sendAuthEmail(email);
+        emailservice.sendAuthEmail(fullEmail);
 	}
 
 	//인증번호 검증

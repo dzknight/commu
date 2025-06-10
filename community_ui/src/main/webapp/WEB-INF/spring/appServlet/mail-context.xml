@@ -17,8 +17,8 @@
         <property name="host" value="smtp.naver.com" />
         <property name="port" value="465" />
         <!-- properties 파일에서 불러온 값으로 변경 -->
-        <property name="username" value="kkk98000@naver.com" />
-        <property name="password" value="ejkkk98!!!" />
+        <property name="username" value="dzknight11@naver.com" />
+        <property name="password" value="isbn2451" />
         <property name="javaMailProperties">
             <props>
                 <prop key="mail.transport.protocol">smtp</prop>

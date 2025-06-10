@@ -60,6 +60,12 @@ body {
 	margin-top: 5px;
 	justify-content: center;
 }
+.btn { padding: 8px 15px; margin: 5px; }
+
+.btn-primary { background-color: #007bff; color: white; border: none; }
+
+.btn-success { background-color: #28a745; color: white; border: none; }
+
 
 #signUp button[type="submit"] {
 	padding: 10px 16px;
@@ -115,6 +121,10 @@ body {
 #idCheckBtn:hover {
 	background-color: #0056b3;
 }
+
+.form-group { margin-bottom: 15px; }
+
+.email-auth-section { border: 1px solid #ddd; padding: 15px; margin: 10px 0; }
 
 .email-group {
 	display: flex;
@@ -236,6 +246,10 @@ body {
     object-fit: cover; /* 비율 유지하며 크롭 */
     object-position: center; /* 중앙 정렬 */
 }
+.email-auth-section { 
+    border: 1px solid #ddd; padding: 15px; margin: 10px 0; 
+    border-radius: 4px;
+}
 
 /* 로딩 상태 스타일 */
 .loading {
@@ -274,6 +288,10 @@ let isValidPhoto = false;
 let isIdChecked = false;
 let isPasswordValid = false;
 let isPasswordConfirmed = false;
+//이메일검증여부
+let emailVerified = false;
+//시간간격
+let timerInterval;
 
 //AI 여권사진 변환을 위한 전역 변수
 let isProcessing = false;
@@ -717,7 +735,8 @@ async function convertWithIdPhotoAI(file) {
         throw error;
     }
 }
-
+</script>
+<script>
 // DOM 로드 완료 후 이벤트 리스너 등록
 document.addEventListener('DOMContentLoaded', function() {
     // 상세 주소 입력 시 fullAddress 갱신
@@ -985,9 +1004,19 @@ $(document).ready(function(){
 							<option value="hotmail.com">hotmail.com</option>
 							<option value="kakao.com">kakao.com</option>
 						</select>
+						<input type="text" name="fullEmail" id="fullEmail">
 						<button type="button" name="email" id="emailAuthBtn">인증메일 보내기</button>
-						<input type="hidden" name="fullEmail" id="fullEmail">
 					</div>
+                    <div class="email-auth-section">
+                        <h4>이메일 인증</h4>
+                        <div class="form-group" id="authCodeSection">
+                            <label>인증 번호</label>
+                            <input type="text" id="authCode" name="authCode" placeholder="6자리 인증 번호를 입력하세요" required>
+                            <button type="button" id="verifyCodeBtn" class="btn btn-success">인증확인</button>
+                            <div id="timer" class="error"></div>
+                        </div>
+                        <div id="emailAuthResult"></div>
+                    </div>
 				</td>
 			</tr>
 			<tr>
@@ -1039,4 +1068,128 @@ $(document).ready(function(){
 		</table>
 	</form>
 </body>
+<script>
+// 이메일 인증번호 전송
+$('#emailAuthBtn').click(function() {
+    const email = $('#fullEmail').val();
+    alert(email);
+    if (!email) {
+        alert('이메일을 입력해주세요.');
+        return;
+    }
+    
+    $.ajax({
+        url: '/send-email-auth',
+        type: 'POST',
+        data: { fullEmail: email },
+        success: function(response) {
+        	if (response.success) {
+                $('#emailAuthResult').html('<div class="success">' + response.message + '</div>');
+                $('#authCodeSection').show();
+                $('#emailAuthBtn').text('재전송').removeClass('btn-primary').addClass('btn-secondary');
+                
+                // 5분 타이머 시작
+                startTimer(300);
+            } else {
+                $('#emailAuthResult').html('<div class="error">' + response.message + '</div>');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('AJAX 오류:', xhr, status, error); // 디버깅용
+            
+            let errorMessage = '인증번호 전송 중 오류가 발생했습니다.';
+            if (status === 'timeout') {
+                errorMessage = '요청 시간이 초과되었습니다. 다시 시도해주세요.';
+            } else if (xhr.status === 404) {
+                errorMessage = '서버를 찾을 수 없습니다. 관리자에게 문의하세요.';
+            } else if (xhr.status === 500) {
+                errorMessage = '서버 내부 오류가 발생했습니다.';
+            }
+            
+            $('#emailAuthResult').html('<div class="error">' + errorMessage + '</div>');
+            alert(errorMessage);
+        },
+        complete: function() {
+            // 버튼 다시 활성화
+            $('#emailAuthBtn').prop('disabled', false);
+            if ($('#emailAuthBtn').text() === '전송중...') {
+                $('#emailAuthBtn').text('인증메일 보내기');
+            }
+        }
+    });
+});
+
+// 인증번호 검증
+$('#verifyCodeBtn').click(function() {
+    const email = $('#userEmail').val();
+    const code = $('#authCode').val();
+    
+    if (!code) {
+        alert('인증번호를 입력해주세요.');
+        return;
+    }
+    
+    $.ajax({
+        url: '${pageContext.request.contextPath}/verify-email-code',
+        type: 'POST',
+        data: { 
+            email: email,
+            code: code 
+        },
+        success: function(response) {
+            if (response.success) {
+                $('#emailAuthResult').html('<div class="success">' + response.message + '</div>');
+                $('#authCodeSection').hide();
+                $('#sendEmailBtn').prop('disabled', true).text('인증완료');
+                $('#userEmail').prop('readonly', true);
+                emailVerified = true;
+                updateSubmitButton();
+                clearInterval(timerInterval);
+            } else {
+                $('#emailAuthResult').html('<div class="error">' + response.message + '</div>');
+            }
+        },
+        error: function() {
+            $('#emailAuthResult').html('<div class="error">인증 처리 중 오류가 발생했습니다.</div>');
+        }
+    });
+});
+
+// 타이머 시작
+function startTimer(duration) {
+    clearInterval(timerInterval);
+    let timer = duration;
+    
+    timerInterval = setInterval(function() {
+        const minutes = parseInt(timer / 60, 10);
+        const seconds = parseInt(timer % 60, 10);
+        
+        const display = minutes + ":" + (seconds < 10 ? "0" + seconds : seconds);
+        $('#timer').text('남은 시간: ' + display);
+        
+        if (--timer < 0) {
+            clearInterval(timerInterval);
+            $('#timer').text('인증시간이 만료되었습니다. 재전송해주세요.');
+            $('#authCodeSection').hide();
+        }
+    }, 1000);
+}
+
+// 회원가입 버튼 활성화 체크
+function updateSubmitButton() {
+    if (emailVerified) {
+        $('#submitBtn').removeClass('disabled').prop('disabled', false);
+    }
+}
+ 
+// 폼 제출 시 이메일 인증 확인
+$('#signUpForm').submit(function(e) {
+    if (!emailVerified) {
+        e.preventDefault();
+        alert('이메일 인증을 완료해주세요.');
+        return false;
+    }
+});
+
+</script>
 </html>

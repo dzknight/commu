@@ -25,7 +25,7 @@ public class EmailService {
     public void sendAuthEmail(String toEmail) throws Exception {
         // 인증번호 생성
         String authCode = redisUtil.createCertifyNum();
-        
+        System.out.println(authCode);
         // 이메일 내용 구성
         String subject = "회원가입 이메일 인증";
         String content = buildEmailContent(authCode);
@@ -68,7 +68,7 @@ public class EmailService {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
         
-        helper.setFrom("your-email@gmail.com");
+        helper.setFrom("dzknight11@naver.com");
         helper.setTo(toEmail);
         helper.setSubject(subject);
         helper.setText(content, true);

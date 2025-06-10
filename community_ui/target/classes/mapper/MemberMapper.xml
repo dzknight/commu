@@ -97,6 +97,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         FROM sys.member 
         WHERE user_id = #{userId}
     </select>
-    
-
+    <!-- 이메일 중복 확인 -->
+    <select id="checkEmailDuplicate" parameterType="String" resultType="int">
+        SELECT COUNT(*) FROM sys.member WHERE user_email = #{userEmail}
+    </select>
+	<!-- 이메일로 회원 조회 -->
+    <select id="selectByEmail" parameterType="String" resultType="www.silver.vo.MemberVO">
+        SELECT * FROM sys.member WHERE user_email = #{userEmail}
+    </select>
 </mapper>

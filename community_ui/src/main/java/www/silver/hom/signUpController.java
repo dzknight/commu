@@ -15,11 +15,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import www.silver.mail.EmailService;
 import www.silver.service.IF_signUpService;
 import www.silver.vo.MemberVO;
 
@@ -28,6 +30,9 @@ public class signUpController {
 
     @Inject
     IF_signUpService signupservice;
+    
+    @Inject
+    EmailService emailservice;
     
     // 파일 업로드 경로 설정
     //private static final String UPLOAD_PATH = "C:/upload/profile/";
@@ -137,7 +142,51 @@ public class signUpController {
     	
 		return "/mypage";
 	}
+    // 이메일 인증번호 전송 (AJAX)
+    @RequestMapping(value = "/send-email-auth", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> sendEmailAuth(@RequestParam String fullEmail) {
+        Map<String, Object> result = new HashMap<>();
+        
+        try {
+        	 // 이메일 형식 검증
+            if (fullEmail == null || fullEmail.trim().isEmpty()) {
+                result.put("success", false);
+                result.put("message", "이메일을 입력해주세요.");
+                return result;
+            }
+            
+            System.out.println("인증번호가 전송되었습니다."+fullEmail);
+            emailservice.sendAuthEmail(fullEmail);
+            result.put("success", true);
+            result.put("message", "인증번호가 전송되었습니다.");
+        }   catch (Exception e) {
+        	
+            result.put("success", false);
+            result.put("message", e.getMessage());
+        }
+        
+        return result;
+    }
     
+    // 인증번호 검증 (AJAX)
+    @RequestMapping(value = "/verify-email-code", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> verifyEmailCode(@RequestParam String email, 
+                                               @RequestParam String code) {
+        Map<String, Object> result = new HashMap<>();
+        
+        try {
+            boolean isValid = emailservice.verifyAuthCode(email, code);
+            result.put("success", isValid);
+            result.put("message", isValid ? "이메일 인증이 완료되었습니다." : "인증번호가 올바르지 않습니다.");
+        } catch (Exception e) {
+            result.put("success", false);
+            result.put("message", "인증 처리 중 오류가 발생했습니다.");
+        }
+        
+        return result;
+    }
 	 // 파일 저장 메서드
     private String saveProfileImage(MultipartFile file) throws Exception {
         //String uploadPath = servletContext.getRealPath("/resources/upload/profile/");

@@ -28,7 +28,7 @@ public interface IF_signUpService {
 	
 	void deleteMember(String userid);
 	
-	public void sendEmailVerification(String email) throws MessagingException, Exception;
+	public void sendEmailVerification(String fullEmail) throws MessagingException, Exception;
 	 
 	public void registerMember(MemberVO membervo, String certificationNumber) throws Exception;
 	
