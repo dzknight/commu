@@ -48,4 +48,26 @@ public class MailController {
             return "메일 전송 실패: " + e.getMessage();
         }
     }
+    
+    // 이메일 전송 처리
+    @PostMapping("/mailsend")
+    @ResponseBody
+    public String mailsend(
+        @RequestParam(value = "address") String address,
+        @RequestParam(value = "title") String title,
+        @RequestParam(value = "message") String message) {
+
+        try {
+            MailVO mailvo = new MailVO();
+            mailvo.setFromaddress("dzknight11@naver.com");
+            mailvo.setAddress(address);
+            mailvo.setTitle(title);
+            mailvo.setMessage(message);
+
+            mailService.sendAuthEmail(address);
+            return "메일 전송 성공";
+        } catch (Exception e) {
+            return "메일 전송 실패: " + e.getMessage();
+        }
+    }
 }

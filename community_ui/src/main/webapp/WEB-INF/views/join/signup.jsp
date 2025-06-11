@@ -4,284 +4,322 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="회원가입 페이지로, 사용자 정보를 입력하고 여권 사진을 업로드하여 회원 가입을 진행합니다.">
 <title>회원가입</title>
-
-<!-- jQuery는 하나만 불러오도록 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/join.css">
+<script src="${pageContext.request.contextPath}/resources/js/common.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+// jQuery 기반 기능들
+$(document).ready(function(){
+    let isIdChecked = false;
+    
+    // 아이디 중복체크
+    $("#idCheckBtn").click(function(){
+        var userId = $("#userId").val().trim();
+        
+        if(userId === "") {
+            alert("사용할 아이디를 입력하세요");
+            $("#userId").focus();
+            return false;
+        }
+        
+        // 아이디 유효성 검사 (영문, 숫자만 허용)
+        var idPattern = /^[a-zA-Z0-9]+$/;
+        if(!idPattern.test(userId)) {
+            alert("아이디는 영문과 숫자만 사용 가능합니다.");
+            $("#userId").focus();
+            return false;
+        }
+        
+        $.ajax({
+            type: "POST",
+            url: "${pageContext.request.contextPath}/userIdCheck",
+            data: { userId: userId },
+            dataType: "json",
+            beforeSend: function() {
+                $("#idCheckBtn").prop("disabled", true).text("확인중...");
+            },
+            success: function(data){
+                if(data.count === 0) {
+                    $("#idCheckStatus").text("사용 가능한 아이디입니다.").css("color", "green");
+                    isIdChecked = true;
+                    alert("사용 가능한 아이디입니다.");
+                } else {
+                    $("#idCheckStatus").text("이미 사용 중인 아이디입니다.").css("color", "red");
+                    isIdChecked = false;
+                    alert("이미 사용 중인 아이디입니다.");
+                }
+            },
+            error: function(xhr, status, error){
+                console.error("AJAX 오류:", error);
+                alert("서버와 통신 중 오류가 발생했습니다.");
+                isIdChecked = false;
+            },
+            complete: function() {
+                $("#idCheckBtn").prop("disabled", false).text("중복체크");
+                updateSubmitButtonState();
+            }
+        });
+    });
+    
+    // 비밀번호 유효성 검사
+    $('#userPassword').keyup(function() {
+        let password = $(this).val();
+        
+        if (password === '') {
+            $('#passwordCheck1').html('<b style="font-size:14px; color:red;">[사용할 비밀번호를 입력하세요]</b>');
+            isPasswordValid = false;
+            updateSubmitButtonState();
+            return;
+        }
+        
+        // 클라이언트 사이드 비밀번호 검증
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+        if (passwordRegex.test(password)) {
+            $('#passwordCheck1').html('<b style="font-size:14px; color:green;">[사용 가능한 비밀번호입니다.]</b>');
+            isPasswordValid = true;
+        } else {
+            $('#passwordCheck1').html('<b style="font-size:14px; color:red;">[비밀번호는 영문, 숫자, 특수문자를 포함해 8자 이상이어야 합니다.]</b>');
+            isPasswordValid = false;
+        }
+        updateSubmitButtonState();
+    });
+    
+    // 비밀번호 확인
+    $('#userPasswordConfirm').keyup(function() {
+        let confirmPwd = $(this).val();
+        let pwd = $('#userPassword').val();
+        
+        if (confirmPwd === '') {
+            $('#passwordCheck2').html('<b style="font-size:14px; color:blue;">[비밀번호 확인은 필수 정보입니다.]</b>');
+            isPasswordConfirmed = false;
+        } else if (confirmPwd !== pwd) {
+            $('#passwordCheck2').html('<b style="font-size:14px; color:red;">[입력한 비밀번호가 일치하지 않습니다.]</b>');
+            isPasswordConfirmed = false;
+        } else {
+            $('#passwordCheck2').html('<b style="font-size:14px; color:green;">[비밀번호가 일치합니다.]</b>');
+            isPasswordConfirmed = true;
+        }
+        updateSubmitButtonState();
+    });
+    
+    // 폼 제출 시 최종 검증
+    $('#signUpForm').submit(function(event) {
+        // 필수 유효성 검사
+        if (!isPasswordValid) {
+            alert('비밀번호가 유효하지 않습니다.');
+            event.preventDefault();
+            return false;
+        }
+        
+        if (!isPasswordConfirmed) {
+            alert('비밀번호 확인이 일치하지 않습니다.');
+            event.preventDefault();
+            return false;
+        }
+        
+        // 프로필 사진이 업로드되었지만 유효하지 않은 경우
+        const profileImage = document.getElementById('profileImage');
+        if (profileImage && profileImage.files.length > 0 && !isValidPhoto) {
+            alert('프로필 사진이 여권사진 규격에 맞지 않습니다.');
+            event.preventDefault();
+            return false;
+        }
+        
+        return true;
+    });
+});
 
-<style>
-body {
-	font-family: sans-serif;
-	background-color: #f4f4f4;
-	margin: 0;
-	padding: 40px 0;
-	display: flex;
-	justify-content: center;
-	align-items: flex-start;
+</script>
+
+<script>
+
+// 이메일 인증번호 전송
+$('#emailAuthBtn').click(function() {
+    const email = $('#fullEmail').val();
+    alert(email);
+    if (!email) {
+        alert('이메일을 입력해주세요.');
+        return;
+    }
+    
+    $.ajax({
+        url: '/mailsend',
+        type: 'POST',
+        data: { fullEmail: email },
+        success: function(response) {
+        	if (response.success) {
+                $('#emailAuthResult').html('<div class="success">' + response.message + '</div>');
+                $('#authCodeSection').show();
+                $('#emailAuthBtn').text('재전송').removeClass('btn-primary').addClass('btn-secondary');
+                
+                // 5분 타이머 시작
+                startTimer(300);
+            } else {
+                $('#emailAuthResult').html('<div class="error">' + response.message + '</div>');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('AJAX 오류:', xhr, status, error); // 디버깅용
+            
+            let errorMessage = '인증번호 전송 중 오류가 발생했습니다.';
+            if (status === 'timeout') {
+                errorMessage = '요청 시간이 초과되었습니다. 다시 시도해주세요.';
+            } else if (xhr.status === 404) {
+                errorMessage = '서버를 찾을 수 없습니다. 관리자에게 문의하세요.';
+            } else if (xhr.status === 500) {
+                errorMessage = '서버 내부 오류가 발생했습니다.';
+            }
+            
+            $('#emailAuthResult').html('<div class="error">' + errorMessage + '</div>');
+            alert(errorMessage);
+        },
+        complete: function() {
+            // 버튼 다시 활성화
+            $('#emailAuthBtn').prop('disabled', false);
+            if ($('#emailAuthBtn').text() === '전송중...') {
+                $('#emailAuthBtn').text('인증메일 보내기');
+            }
+        }
+    });
+});
+
+// 인증번호 검증
+$('#verifyCodeBtn').click(function() {
+    const email = $('#userEmail').val();
+    const code = $('#authCode').val();
+    
+    if (!code) {
+        alert('인증번호를 입력해주세요.');
+        return;
+    }
+    
+    $.ajax({
+        url: '${pageContext.request.contextPath}/verify-email-code',
+        type: 'POST',
+        data: { 
+            email: email,
+            code: code 
+        },
+        success: function(response) {
+            if (response.success) {
+                $('#emailAuthResult').html('<div class="success">' + response.message + '</div>');
+                $('#authCodeSection').hide();
+                $('#sendEmailBtn').prop('disabled', true).text('인증완료');
+                $('#userEmail').prop('readonly', true);
+                emailVerified = true;
+                updateSubmitButton();
+                clearInterval(timerInterval);
+            } else {
+                $('#emailAuthResult').html('<div class="error">' + response.message + '</div>');
+            }
+        },
+        error: function() {
+            $('#emailAuthResult').html('<div class="error">인증 처리 중 오류가 발생했습니다.</div>');
+        }
+    });
+});
+
+// 타이머 시작
+function startTimer(duration) {
+    clearInterval(timerInterval);
+    let timer = duration;
+    
+    timerInterval = setInterval(function() {
+        const minutes = parseInt(timer / 60, 10);
+        const seconds = parseInt(timer % 60, 10);
+        
+        const display = minutes + ":" + (seconds < 10 ? "0" + seconds : seconds);
+        $('#timer').text('남은 시간: ' + display);
+        
+        if (--timer < 0) {
+            clearInterval(timerInterval);
+            $('#timer').text('인증시간이 만료되었습니다. 재전송해주세요.');
+            $('#authCodeSection').hide();
+        }
+    }, 1000);
 }
 
-#signUpForm {
-	background-color: #fff;
-	padding: 30px 40px;
-	border-radius: 10px;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-	width: 500px;
+// 회원가입 버튼 활성화 체크
+function updateSubmitButton() {
+    if (emailVerified) {
+        $('#submitBtn').removeClass('disabled').prop('disabled', false);
+    }
 }
+ 
+// 폼 제출 시 이메일 인증 확인
+$('#signUpForm').submit(function(e) {
+    if (!emailVerified) {
+        e.preventDefault();
+        alert('이메일 인증을 완료해주세요.');
+        return false;
+    }
+});
 
-#signUp td {
-	padding: 10px 0;
-	vertical-align: top;
-}
+</script>
 
-#signUp label {
-	display: block;
-	font-weight: bold;
-	margin-bottom: 5px;
-}
+<script>
+// DOM이 완전히 로드된 후 스크립트가 실행되도록 합니다.
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // 전송 버튼 클릭 이벤트 리스너를 등록합니다.
+    document.getElementById('sendBtn').addEventListener('click', function() {
+        
+        // 입력 필드에서 값을 가져옵니다.
+        const address = document.getElementById('address').value;
+        const title = document.getElementById('title').value;
+        const message = document.getElementById('message').value;
+        
+        // 전송할 데이터를 객체 형태로 만듭니다.
+        const mailData = {
+            address: address,
+            title: title,
+            message: message
+        };
+        
+        // 결과를 표시할 span 엘리먼트를 가져옵니다.
+        const responseSpan = document.getElementById('responseMessage');
+        responseSpan.innerText = '전송 중...'; // 사용자에게 진행 상황을 알립니다.
+        
+        // fetch API를 사용하여 서버에 POST 요청을 보냅니다.
+        fetch('${pageContext.request.contextPath}/mailsend', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json' // 전송하는 데이터가 JSON 형식임을 명시합니다.
+            },
+            body: JSON.stringify(mailData) // JavaScript 객체를 JSON 문자열로 변환합니다.
+        })
+        .then(response => {
+            if (!response.ok) {
+                // 서버 응답이 실패한 경우(예: 500 에러) 예외를 발생시킵니다.
+                throw new Error('서버 응답이 올바르지 않습니다.');
+            }
+            return response.json(); // 서버가 보낸 JSON 응답을 파싱합니다.
+        })
+        .then(data => {
+            // 성공적으로 응답을 받았을 때 메시지를 표시합니다.
+            responseSpan.style.color = data.success ? 'blue' : 'red';
+            responseSpan.innerText = data.message;
+            
+            // 성공 시 입력 필드를 비웁니다.
+            if (data.success) {
+                document.getElementById('mailForm').reset();
+            }
+        })
+        .catch(error => {
+            // 네트워크 오류나 위의 then 블록에서 발생한 예외를 처리합니다.
+            console.error('Error:', error);
+            responseSpan.style.color = 'red';
+            responseSpan.innerText = '메일 전송 중 오류가 발생했습니다.';
+        });
+    });
+});
+</script>
 
-#signUp input[type="text"], #signUp input[type="password"], #signUp input[type="email"],
-	#signUp select, #signUp input[type="date"] {
-	width: calc(100% - 20px);
-	padding: 8px 10px;
-	font-size: 14px;
-	border: 1px solid #ccc;
-	border-radius: 4px;
-}
-
-#signUp input[readonly] {
-	background-color: #e9ecef;
-	cursor: not-allowed;
-}
-
-.button-group {
-	display: flex;
-	gap: 10px;
-	margin-top: 5px;
-	justify-content: center;
-}
-.btn { padding: 8px 15px; margin: 5px; }
-
-.btn-primary { background-color: #007bff; color: white; border: none; }
-
-.btn-success { background-color: #28a745; color: white; border: none; }
-
-
-#signUp button[type="submit"] {
-	padding: 10px 16px;
-	background-color: #007bff;
-	color: white;
-	border: none;
-	border-radius: 4px;
-	cursor: pointer;
-	font-size: 14px;
-	transition: background-color 0.3s ease;
-	margin-top: 5px;
-}
-
-#signUp button[type="submit"]:hover {
-	background-color: #0056b3;
-}
-
-#signUp button[type="submit"]:disabled {
-	background-color: #6c757d;
-	cursor: not-allowed;
-}
-
-#cancelBtn {
-	padding: 10px 16px;
-	background-color: #6c757d;
-	color: white;
-	border: none;
-	border-radius: 4px;
-	cursor: pointer;
-	font-size: 14px;
-	transition: background-color 0.3s ease;
-	margin-top: 5px;
-}
-
-#cancelBtn:hover {
-	background-color: #5a6268;
-}
-
-#idCheckBtn {
-	padding: 8px 14px;
-	background-color: #007bff;
-	color: white;
-	border: none;
-	border-radius: 4px;
-	cursor: pointer;
-	font-size: 14px;
-	transition: background-color 0.3s ease;
-	margin-top: 0;
-	white-space: nowrap;
-	min-width: 90px;
-}
-
-#idCheckBtn:hover {
-	background-color: #0056b3;
-}
-
-.form-group { margin-bottom: 15px; }
-
-.email-auth-section { border: 1px solid #ddd; padding: 15px; margin: 10px 0; }
-
-.email-group {
-	display: flex;
-	align-items: center;
-	flex-wrap: wrap;
-	gap: 5px;
-}
-
-.email-group input[type="text"], .email-group select {
-	width: auto;
-	min-width: 120px;
-	flex: 1;
-}
-
-.email-group span {
-	font-weight: bold;
-	padding: 0 5px;
-}
-
-.id-check-container {
-	display: flex;
-	align-items: center;
-	gap: 10px;
-}
-
-#signUp button.zipcode-btn {
-	padding: 10px 16px;
-	background-color: #007bff;
-	color: white;
-	border: none;
-	border-radius: 4px;
-	cursor: pointer;
-	font-size: 14px;
-	transition: background-color 0.3s ease;
-	margin-left: 10px;
-}
-
-#signUp button.zipcode-btn:hover {
-	background-color: #0056b3;
-}
-
-#signUp input[type="file"] {
-	width: 100%;
-	padding: 8px 10px;
-	font-size: 14px;
-	border: 1px solid #ccc;
-	border-radius: 4px;
-	background-color: #fff;
-	cursor: pointer;
-	box-sizing: border-box;
-	transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-#signUp input[type="file"]:hover {
-	border-color: #007bff;
-	box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-}
-
-#signUp input[type="file"]:focus {
-	outline: none;
-	border-color: #0056b3;
-	box-shadow: 0 0 8px rgba(0, 86, 179, 0.7);
-}
-
-#photoPreview {
-	display: none;
-	max-width: 100%;
-	max-height: 300px;
-	border: 1px solid #ddd;
-	margin-top: 10px;
-}
-
-#emailAuthBtn {
-	padding: 8px 14px;
-	background-color: #28a745;
-	color: white;
-	border: none;
-	border-radius: 4px;
-	cursor: pointer;
-	font-size: 14px;
-	transition: background-color 0.3s ease;
-}
-
-#emailAuthBtn:hover {
-	background-color: #218838;
-}
-
-#photoValidation {
-	margin-top: 10px;
-	font-size: 14px;
-}
-
-.success {
-	color: green;
-}
-
-.error {
-	color: red;
-}
-
-.photo-grid {
-    display: grid;
-    grid-template-columns: 3.5fr;
-    grid-template-rows: 4.5fr;
-    width: 350px;
-    height: 450px;
-}
-
-.passport-ratio-container {
-    width: 350px;
-    height: 450px;
-    overflow: hidden;
-    position: relative;
-}
-
-.passport-ratio-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* 비율 유지하며 크롭 */
-    object-position: center; /* 중앙 정렬 */
-}
-.email-auth-section { 
-    border: 1px solid #ddd; padding: 15px; margin: 10px 0; 
-    border-radius: 4px;
-}
-
-/* 로딩 상태 스타일 */
-.loading {
-    color: #007bff;
-    font-weight: bold;
-    animation: pulse 1.5s ease-in-out infinite alternate;
-}
-
-@keyframes pulse {
-    from { opacity: 1; }
-    to { opacity: 0.5; }
-}
-
-/* AI 변환 옵션 스타일 */
-.ai-convert-options {
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #f8f9fa;
-    border-radius: 4px;
-    border: 1px solid #dee2e6;
-}
-
-.ai-convert-options label {
-    font-weight: normal;
-    margin-bottom: 5px;
-}
-
-.ai-convert-options select {
-    width: auto;
-    margin-left: 10px;
-}
-</style>
 
 <script>
 let isValidPhoto = false;
@@ -519,48 +557,7 @@ function replaceFileInput(newFile) {
 }
 </script>
 
-<script>
-// 우편번호 검색 함수
-function searchZipcode() {
-    new daum.Postcode({
-        oncomplete: function(data) {
-            var fullAddress = data.address;
-            var extraAddress = '';
 
-            if (data.addressType === 'R') {
-                if (data.bname !== '') {
-                    extraAddress += data.bname;
-                }
-                if (data.buildingName !== '') {
-                    extraAddress += (extraAddress !== '' ? ', ' + data.buildingName : data.buildingName);
-                }
-                if (extraAddress !== '') {
-                    fullAddress += ' (' + extraAddress + ')';
-                }
-            }
-
-            document.getElementById('zipCode').value = data.zonecode;
-            document.getElementById('address').value = fullAddress;
-            document.getElementById('detailAddress').focus();
-            updateFullAddress();
-        }
-    }).open();
-}
-
-// 주소 업데이트 함수
-function updateFullAddress() {
-    const address = document.getElementById('address').value;
-    const detailAddress = document.getElementById('detailAddress').value;
-    document.getElementById('fullAddress').value = (address + ' ' + detailAddress).trim();
-}
-
-// 이메일 업데이트 함수
-function updateFullEmail() {
-    const emailId = document.getElementById('email_id').value;
-    const emailDomain = document.getElementById('email_domain_input').value;
-    document.getElementById('fullEmail').value = emailId + '@' + emailDomain;
-}
-</script>
 <script>
 // 유효성 검사 메시지 표시 함수
 function showValidationMessage(message, isValid) {
@@ -736,192 +733,8 @@ async function convertWithIdPhotoAI(file) {
     }
 }
 </script>
-<script>
-// DOM 로드 완료 후 이벤트 리스너 등록
-document.addEventListener('DOMContentLoaded', function() {
-    // 상세 주소 입력 시 fullAddress 갱신
-    const detailAddressInput = document.getElementById('detailAddress');
-    if (detailAddressInput) {
-        detailAddressInput.addEventListener('input', updateFullAddress);
-    }
-    
-    // 이메일 도메인 변경 시
-    const emailDomainSelect = document.getElementById('email_domain');
-    if (emailDomainSelect) {
-        emailDomainSelect.addEventListener('change', function() {
-            const selectedValue = this.value;
-            const emailDomainInput = document.getElementById('email_domain_input');
-            if (emailDomainInput) {
-                emailDomainInput.value = selectedValue;
-                updateFullEmail();
-            }
-        });
-    }
-    
-    // 이메일 아이디 입력 시
-    const emailIdInput = document.getElementById('email_id');
-    if (emailIdInput) {
-        emailIdInput.addEventListener('input', updateFullEmail);
-    }
-    
-    // 프로필 이미지 변경 시 - 완전한 이벤트 리스너
-    const profileImageInput = document.getElementById('profileImage');
-    if (profileImageInput) {
-        profileImageInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            const photoPreview = document.getElementById('photoPreview');
-            const photoValidation = document.getElementById('photoValidation');
-            
-            if (!file) {
-                if (photoPreview) photoPreview.style.display = 'none';
-                if (photoValidation) photoValidation.innerHTML = '';
-                isValidPhoto = false;
-                updateSubmitButtonState();
-                return;
-            }
-            
-            // 파일 크기 검증 (2MB 제한으로 증가)
-            const maxSize = 3 * 1024 * 1024;
-            if (file.size > maxSize) {
-                showValidationMessage('파일 크기가 3MB를 초과합니다.', false);
-                return;
-            }
-            
-            // 파일 형식 검증
-            const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-            if (!allowedTypes.includes(file.type)) {
-                showValidationMessage('JPEG 또는 PNG 파일만 업로드 가능합니다.', false);
-                return;
-            }
-            
-            // 이미지 크기 및 비율 검증
-            validateImageDimensions(file);
-        });
-    }
-});
-</script>
-<script>
-// jQuery 기반 기능들
-$(document).ready(function(){
-    let isIdChecked = false;
-    
-    // 아이디 중복체크
-    $("#idCheckBtn").click(function(){
-        var userId = $("#userId").val().trim();
-        
-        if(userId === "") {
-            alert("사용할 아이디를 입력하세요");
-            $("#userId").focus();
-            return false;
-        }
-        
-        // 아이디 유효성 검사 (영문, 숫자만 허용)
-        var idPattern = /^[a-zA-Z0-9]+$/;
-        if(!idPattern.test(userId)) {
-            alert("아이디는 영문과 숫자만 사용 가능합니다.");
-            $("#userId").focus();
-            return false;
-        }
-        
-        $.ajax({
-            type: "POST",
-            url: "${pageContext.request.contextPath}/userIdCheck",
-            data: { userId: userId },
-            dataType: "json",
-            beforeSend: function() {
-                $("#idCheckBtn").prop("disabled", true).text("확인중...");
-            },
-            success: function(data){
-                if(data.count === 0) {
-                    $("#idCheckStatus").text("사용 가능한 아이디입니다.").css("color", "green");
-                    isIdChecked = true;
-                    alert("사용 가능한 아이디입니다.");
-                } else {
-                    $("#idCheckStatus").text("이미 사용 중인 아이디입니다.").css("color", "red");
-                    isIdChecked = false;
-                    alert("이미 사용 중인 아이디입니다.");
-                }
-            },
-            error: function(xhr, status, error){
-                console.error("AJAX 오류:", error);
-                alert("서버와 통신 중 오류가 발생했습니다.");
-                isIdChecked = false;
-            },
-            complete: function() {
-                $("#idCheckBtn").prop("disabled", false).text("중복체크");
-                updateSubmitButtonState();
-            }
-        });
-    });
-    
-    // 비밀번호 유효성 검사
-    $('#userPassword').keyup(function() {
-        let password = $(this).val();
-        
-        if (password === '') {
-            $('#passwordCheck1').html('<b style="font-size:14px; color:red;">[사용할 비밀번호를 입력하세요]</b>');
-            isPasswordValid = false;
-            updateSubmitButtonState();
-            return;
-        }
-        
-        // 클라이언트 사이드 비밀번호 검증
-        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
-        if (passwordRegex.test(password)) {
-            $('#passwordCheck1').html('<b style="font-size:14px; color:green;">[사용 가능한 비밀번호입니다.]</b>');
-            isPasswordValid = true;
-        } else {
-            $('#passwordCheck1').html('<b style="font-size:14px; color:red;">[비밀번호는 영문, 숫자, 특수문자를 포함해 8자 이상이어야 합니다.]</b>');
-            isPasswordValid = false;
-        }
-        updateSubmitButtonState();
-    });
-    
-    // 비밀번호 확인
-    $('#userPasswordConfirm').keyup(function() {
-        let confirmPwd = $(this).val();
-        let pwd = $('#userPassword').val();
-        
-        if (confirmPwd === '') {
-            $('#passwordCheck2').html('<b style="font-size:14px; color:blue;">[비밀번호 확인은 필수 정보입니다.]</b>');
-            isPasswordConfirmed = false;
-        } else if (confirmPwd !== pwd) {
-            $('#passwordCheck2').html('<b style="font-size:14px; color:red;">[입력한 비밀번호가 일치하지 않습니다.]</b>');
-            isPasswordConfirmed = false;
-        } else {
-            $('#passwordCheck2').html('<b style="font-size:14px; color:green;">[비밀번호가 일치합니다.]</b>');
-            isPasswordConfirmed = true;
-        }
-        updateSubmitButtonState();
-    });
-    
-    // 폼 제출 시 최종 검증
-    $('#signUpForm').submit(function(event) {
-        // 필수 유효성 검사
-        if (!isPasswordValid) {
-            alert('비밀번호가 유효하지 않습니다.');
-            event.preventDefault();
-            return false;
-        }
-        
-        if (!isPasswordConfirmed) {
-            alert('비밀번호 확인이 일치하지 않습니다.');
-            event.preventDefault();
-            return false;
-        }
-        
-        // 프로필 사진이 업로드되었지만 유효하지 않은 경우
-        const profileImage = document.getElementById('profileImage');
-        if (profileImage && profileImage.files.length > 0 && !isValidPhoto) {
-            alert('프로필 사진이 여권사진 규격에 맞지 않습니다.');
-            event.preventDefault();
-            return false;
-        }
-        
-        return true;
-    });
-});
-</script>
+
+
 </head>
 
 <body>
@@ -1068,128 +881,5 @@ $(document).ready(function(){
 		</table>
 	</form>
 </body>
-<script>
-// 이메일 인증번호 전송
-$('#emailAuthBtn').click(function() {
-    const email = $('#fullEmail').val();
-    alert(email);
-    if (!email) {
-        alert('이메일을 입력해주세요.');
-        return;
-    }
-    
-    $.ajax({
-        url: '/send-email-auth',
-        type: 'POST',
-        data: { fullEmail: email },
-        success: function(response) {
-        	if (response.success) {
-                $('#emailAuthResult').html('<div class="success">' + response.message + '</div>');
-                $('#authCodeSection').show();
-                $('#emailAuthBtn').text('재전송').removeClass('btn-primary').addClass('btn-secondary');
-                
-                // 5분 타이머 시작
-                startTimer(300);
-            } else {
-                $('#emailAuthResult').html('<div class="error">' + response.message + '</div>');
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error('AJAX 오류:', xhr, status, error); // 디버깅용
-            
-            let errorMessage = '인증번호 전송 중 오류가 발생했습니다.';
-            if (status === 'timeout') {
-                errorMessage = '요청 시간이 초과되었습니다. 다시 시도해주세요.';
-            } else if (xhr.status === 404) {
-                errorMessage = '서버를 찾을 수 없습니다. 관리자에게 문의하세요.';
-            } else if (xhr.status === 500) {
-                errorMessage = '서버 내부 오류가 발생했습니다.';
-            }
-            
-            $('#emailAuthResult').html('<div class="error">' + errorMessage + '</div>');
-            alert(errorMessage);
-        },
-        complete: function() {
-            // 버튼 다시 활성화
-            $('#emailAuthBtn').prop('disabled', false);
-            if ($('#emailAuthBtn').text() === '전송중...') {
-                $('#emailAuthBtn').text('인증메일 보내기');
-            }
-        }
-    });
-});
 
-// 인증번호 검증
-$('#verifyCodeBtn').click(function() {
-    const email = $('#userEmail').val();
-    const code = $('#authCode').val();
-    
-    if (!code) {
-        alert('인증번호를 입력해주세요.');
-        return;
-    }
-    
-    $.ajax({
-        url: '${pageContext.request.contextPath}/verify-email-code',
-        type: 'POST',
-        data: { 
-            email: email,
-            code: code 
-        },
-        success: function(response) {
-            if (response.success) {
-                $('#emailAuthResult').html('<div class="success">' + response.message + '</div>');
-                $('#authCodeSection').hide();
-                $('#sendEmailBtn').prop('disabled', true).text('인증완료');
-                $('#userEmail').prop('readonly', true);
-                emailVerified = true;
-                updateSubmitButton();
-                clearInterval(timerInterval);
-            } else {
-                $('#emailAuthResult').html('<div class="error">' + response.message + '</div>');
-            }
-        },
-        error: function() {
-            $('#emailAuthResult').html('<div class="error">인증 처리 중 오류가 발생했습니다.</div>');
-        }
-    });
-});
-
-// 타이머 시작
-function startTimer(duration) {
-    clearInterval(timerInterval);
-    let timer = duration;
-    
-    timerInterval = setInterval(function() {
-        const minutes = parseInt(timer / 60, 10);
-        const seconds = parseInt(timer % 60, 10);
-        
-        const display = minutes + ":" + (seconds < 10 ? "0" + seconds : seconds);
-        $('#timer').text('남은 시간: ' + display);
-        
-        if (--timer < 0) {
-            clearInterval(timerInterval);
-            $('#timer').text('인증시간이 만료되었습니다. 재전송해주세요.');
-            $('#authCodeSection').hide();
-        }
-    }, 1000);
-}
-
-// 회원가입 버튼 활성화 체크
-function updateSubmitButton() {
-    if (emailVerified) {
-        $('#submitBtn').removeClass('disabled').prop('disabled', false);
-    }
-}
- 
-// 폼 제출 시 이메일 인증 확인
-$('#signUpForm').submit(function(e) {
-    if (!emailVerified) {
-        e.preventDefault();
-        alert('이메일 인증을 완료해주세요.');
-        return false;
-    }
-});
-
-</script>
 </html>
