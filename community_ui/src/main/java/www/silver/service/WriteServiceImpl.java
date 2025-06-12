@@ -19,12 +19,11 @@ public class WriteServiceImpl implements IF_writeService {
     @Inject
     IF_writeDAO writedao;
 
-    // 게시글 작성 메서드
     @Override
     public void addWrite(BoardVO boardvo) {
-        // 게시글 정보 저장 (postNum이 자동 생성되어 boardvo에 설정됨)
+        // 寃뚯떆湲� �벑濡� (postNum�쓣 癒쇱� �솗蹂댄븳 �썑 �뙆�씪泥섎━)
         writedao.insertWrite(boardvo);
-        // 게시글 저장 후 첨부파일 정보 저장 - postNum 값을 이용해서 파일명 저장
+        // 寃뚯떆湲� �벑濡� �썑 �뙆�씪 紐⑸줉 ���옣 - postNum 湲곗��쑝濡� 臾띠쓬 泥섎━
         Long postNum = boardvo.getPostNum();
         List<String> fname = boardvo.getFilename();
         for (String filename : fname) {
@@ -35,17 +34,15 @@ public class WriteServiceImpl implements IF_writeService {
         }
     }
 
-    // 모든 게시글 조회
     @Override
     public List<BoardVO> boardAllView() {
         List<BoardVO> clist = writedao.selectall();
         return clist;
     }
 
-    int pageLimit = 10; // 한 페이지당 보여줄 게시글 개수
-    int blockLimit = 5; // 하단에 보여줄 페이지 번호 개수
+    int pageLimit = 10; // �븳 �럹�씠吏��떦 蹂댁뿬以� 寃뚯떆湲� �닔
+    int blockLimit = 5; // �븯�떒�뿉 蹂댁뿬以� �럹�씠吏� 踰덊샇 媛쒖닔
 
-    // 페이징 처리된 게시글 목록 조회
     @Override
     public List<BoardVO> pagingList(int page) {
         if (page < 1) {
@@ -60,7 +57,6 @@ public class WriteServiceImpl implements IF_writeService {
         return pagingList;
     }
 
-    // 페이징 정보 계산
     @Override
     public PageVO pagingParam(int page) {
         int boardCount = writedao.boardCount();
@@ -69,11 +65,11 @@ public class WriteServiceImpl implements IF_writeService {
         int maxPage = (int) Math.ceil((double) boardCount / pageLimit);
         if (maxPage < 1) maxPage = 1;
 
-        // 현재 페이지 범위 체크
+        // �쁽�옱 �럹�씠吏� �쑀�슚�꽦 寃��궗
         if (page < 1) page = 1;
         if (page > maxPage) page = maxPage;
 
-        // 하단 페이지 번호 범위 계산
+        // �븯�떒 �럹�씠吏� 踰덊샇 踰붿쐞 怨꾩궛
         int startPage = ((page - 1) / blockLimit) * blockLimit + 1;
         int endPage = startPage + blockLimit - 1;
         if (endPage > maxPage) endPage = maxPage;
@@ -84,7 +80,7 @@ public class WriteServiceImpl implements IF_writeService {
         pagevo.setStartPage(startPage);
         pagevo.setEndPage(endPage);
 
-        System.out.println("== 페이징 정보 확인 ==");
+        System.out.println("== �럹�씠吏� 泥섎━ 寃곌낵 ==");
         System.out.println("page = " + page);
         System.out.println("startPage = " + startPage);
         System.out.println("endPage = " + endPage);
@@ -93,37 +89,33 @@ public class WriteServiceImpl implements IF_writeService {
         return pagevo;
     }
 
-    // 특정 게시글 상세 조회
     @Override
     public BoardVO textview(Long postNum) {
         BoardVO boardvo = writedao.selectOne(postNum);
-        System.out.println("게시글 상세조회, 글번호 " + postNum + "번을 조회했습니다.");
+        System.out.println("寃뚯떆湲� �긽�꽭議고쉶, 湲�踰덊샇 " + postNum + "踰덉쓣 �샇異쒗빀�땲�떎.");
         return boardvo;
     }
 
-    // 첨부파일 목록 조회
     @Override
     public List<String> getAttach(Long postNum) {
         return writedao.getAttach(postNum);
     }
 
-    // 게시글 삭제
     @Override
     public void deleteWrite(Long postNum) {
         writedao.deleteWrite(postNum);
     }
 
-    // 게시글 수정
     @Override
     public void modifyWrite(BoardVO boardvo) {
-        System.out.println("modify POST 호출됨");
-        // 1) 게시글 수정
+    	 System.out.println("modify POST �샇異쒕맖");
+        // 1) 寃뚯떆湲� �궡�슜 癒쇱� �닔�젙
         writedao.modifyWrite(boardvo);
-
-        // 2) 수정 작업시 기존 첨부파일 삭제
+        
+        // 2) 湲곗〈 泥⑤��뙆�씪 �궘�젣 (postNum 湲곗�)
         writedao.deleteAttach(boardvo.getPostNum());
-
-        // 3) 새로운 첨부파일 삽입
+        
+        // 3) �깉 泥⑤��뙆�씪 insert
         List<String> filenames = boardvo.getFilename();
         if (filenames != null) {
             for (String filename : filenames) {
@@ -135,64 +127,67 @@ public class WriteServiceImpl implements IF_writeService {
         }
     }
 
-    // 조회수 증가
-    @Override
-    public void viewCount(Long postNum) {
-        writedao.viewCount(postNum);
-    }
+	@Override
+	public void viewCount(Long postNum) {
+		writedao.viewCount(postNum);
+		
+		
+	}
 
-    // 댓글 작성
-    @Override
-    public void addCommentWrite(CommentVO commentvo) {
+	@Override
+	public void addCommentWrite(CommentVO commentvo) {
         writedao.insertCommentWrite(commentvo);
-    }
+	}
 
-    // 댓글 목록 조회
-    @Override
-    public List<CommentVO> getComments(Long postNum) {
-        List<CommentVO> commentList = writedao.selectAllComment(postNum);
-        return commentList;
-    }
+	@Override
+	public List<CommentVO> getComments(Long postNum) {
+		List<CommentVO> commentList = writedao.selectAllComment(postNum);
+		return commentList;
+	}
 
-    // 댓글 삭제
-    @Override
-    public boolean deleteComment(int commentId, String userId) {
-        return writedao.deleteComment(commentId, userId);
-    }
+	@Override
+	public boolean deleteComment(int commentId, String userId) {
+		return writedao.deleteComment(commentId, userId);
+	}
 
-    // 댓글 수정
-    @Override
-    public boolean updateComment(int commentId, String content, Long postNum) {
-        return writedao.updateComment(commentId, content, postNum);
-    }
+	@Override
+	public boolean updateComment(int commentId, String content, Long postNum) {
+		return writedao.updateComment(commentId, content, postNum);
+		
+	}
 
-    // 대댓글 작성
-    @Override
-    public void addCommentReply(CommentVO commentvo) {
-        // 부모 댓글 정보 조회
-        Integer parentCommentId = commentvo.getParentCommentId();
-        // 부모 댓글의 id값이 null이 아니면
-        if (parentCommentId != null) {
-            CommentVO parentComment = writedao.getCommentById(parentCommentId);
-            if (parentComment != null) {
-                // 대댓글의 depth를 부모 댓글의 depth + 1로 설정
-                commentvo.setDepth(parentComment.getDepth() + 1);
-                // postNum은 클라이언트에서 전달받은 값을 우선 사용하거나, 부모 댓글 값으로 보완
-                if (commentvo.getPostNum() == null) {
-                    commentvo.setPostNum(parentComment.getPostNum());
-                }
-            } else {
-                // 부모 댓글이 존재하지 않는 경우 (예외 상황)
-                commentvo.setDepth(1);
-            }
-        }
-        // 대댓글 저장
-        writedao.addCommentReply(commentvo);
-    }
+	@Override
+	public void addCommentReply(CommentVO commentvo) {
+	    // 부모 댓글 정보 조회
+	    Integer parentCommentId = commentvo.getParentCommentId();
+	    // 부모 댓글이의 id가 널이 아니면
+	    if (parentCommentId != null) {
+	        CommentVO parentComment = writedao.getCommentById(parentCommentId);
+	        if (parentComment != null) {
+	            // 대댓글의 depth를 부모 댓글의 depth + 1로 설정
+	            commentvo.setDepth(parentComment.getDepth() + 1);
+	            // postNum은 클라이언트에서 전달받은 값을 우선 사용하거나, 부모 댓글 값으로 보완
+	            if (commentvo.getPostNum() == null) {
+	                commentvo.setPostNum(parentComment.getPostNum());
+	            }
+	        } else {
+	            // 부모 댓글이 존재하지 않는 경우 (예외 상황)
+	            commentvo.setDepth(1);
+	        }
+	    }
+	    // 대댓글 저장
+	    writedao.addCommentReply(commentvo);
+	}
 
-    // 대댓글 수정
-    @Override
-    public boolean updateReply(int commentId, String content, Long postNum) {
-        return writedao.updateReplyComment(commentId, content, postNum);
-    }
+	
+
+		
+		
+		
+	
+
+	
+
+	
+
 }

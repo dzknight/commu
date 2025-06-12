@@ -76,7 +76,16 @@
 			<artifactId>aspectjrt</artifactId>
 			<version>${org.aspectj-version}</version>
 		</dependency>
-
+		<dependency>
+		<groupId>org.springframework.batch</groupId>
+		<artifactId>spring-batch-core</artifactId>
+		<version>3.0.10.RELEASE</version>
+		</dependency>
+		<dependency>
+		<groupId>org.springframework.batch</groupId>
+		<artifactId>spring-batch-infrastructure</artifactId>
+		<version>3.0.10.RELEASE</version>
+		</dependency>
 		<!-- SLF4J + Log4J -->
 		<dependency>
 			<groupId>org.slf4j</groupId>

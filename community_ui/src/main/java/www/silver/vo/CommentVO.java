@@ -9,6 +9,7 @@ public class CommentVO {
     private String content; // 댓글 내용
     private Integer parentCommentId; // 부모 댓글 ID (최상위 댓글일 경우 0 또는 -1)
     private Integer depth; // 계층 깊이 (0: 댓글, 1 이상: 대댓글)
+    private int likes; // 좋아요 수
     private boolean isDeleted; // 삭제 여부
     private Timestamp createdAt; // 작성 시각
     private Timestamp updateAt; // 수정 시각
@@ -63,6 +64,13 @@ public class CommentVO {
 		return depth;
 	}
 
+	public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
 
     public boolean isDeleted() {
         return isDeleted;

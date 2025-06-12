@@ -10,12 +10,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <!-- 사용자 정보 조회 -->
     <select id="getMemberById" parameterType="String" resultType="www.silver.vo.MemberVO">
-        SELECT user_id as userId, 
-               user_password as userPassword,
-               user_name as userName,
+        SELECT user_id as `userId`, 
+               user_password as `userPassword`,
+               user_name as `userName`,
                user_email,
-               birth_date as birthdate
-               reg_date as regdate
+               birth_date as `birthdate`,
+               reg_date as `regdate`
                
         FROM sys.member 
         WHERE user_id = #{userid}
@@ -36,8 +36,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<select id="userLogin" parameterType="map" resultType="www.silver.vo.MemberVO">
 		SELECT user_id AS userId,
-		user_password AS userPassword
-		FROM member
+		user_password AS `userPassword`
+		FROM sys.member
 		WHERE user_id = #{userId}
 		AND user_password = #{userPassword}
 	</select>
@@ -83,15 +83,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <!-- 회원 정보 조회 -->
     <select id="selectByUserId" parameterType="string" resultType="www.silver.vo.MemberVO">
         SELECT 
-            user_id as userId,
-            user_password as userPassword,
-            user_name as userName,
+            user_id as `userId`,
+            user_password as `userPassword`,
+            user_name as `userName`,
             zipcode,
             address,
-            user_email as userEmail,
-            user_phone_number as userPhoneNum,
-            reg_date as regDate,
-            birth_date as birthDate,
+            user_email as `userEmail`,
+            user_phone_number as `userPhoneNum`,
+            reg_date as `regDate`,
+            birth_date as `birthDate`,
             profile_img,
             detailAddress
         FROM sys.member 

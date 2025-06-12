@@ -216,7 +216,7 @@ $(document).ready(function() {
         <a href="${pageContext.request.contextPath}/" class="logo">
             <p class="logo-img">BugBuster</p>
         </a>
-         <header>
+<header>
         <c:choose>
             <c:when test="${not empty sessionScope.loginMember}">
                 <div class="user-info">

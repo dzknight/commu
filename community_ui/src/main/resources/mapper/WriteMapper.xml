@@ -7,8 +7,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<insert id="insertone" parameterType="www.silver.vo.BoardVO"
 		useGeneratedKeys="true" keyProperty="postNum">
 		INSERT INTO board (title, content,
-		writer, programmingLanguage)
-		VALUES (#{title}, #{content}, #{writer}, #{programmingLanguage})
+		writer)
+		VALUES (#{title}, #{content}, #{writer})
 	</insert>
 
 	<insert id="board_attach" parameterType="map"
@@ -58,8 +58,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SET
 		title =
 		#{title},
-		content = #{content},
-		programmingLanguage = #{programmingLanguage}
+		content = #{content}
 		WHERE postNum = #{postNum}
 	</update>
 
@@ -141,14 +140,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		#{content}, #{parentCommentId}, #{depth}, 0,
 		FALSE)
 	</insert>
-	
-	<update id="updateReplyComment" parameterType="map">
-		UPDATE comment
-		SET content = #{content}
-		WHERE commentId = #{commentId}
-		AND postNum = #{postNum}
-		AND depth > 0
-	</update>
 
 	
 

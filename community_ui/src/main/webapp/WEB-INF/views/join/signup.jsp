@@ -399,7 +399,7 @@
                                 <i class="fas fa-redo"></i>
                                 <span>초기화</span>
                             </button>
-                            <button type="submit" id="submitBtn" class="primary-btn" disabled>
+                            <button type="submit" id="submitBtn" class="primary-btn" >
                                 <i class="fas fa-rocket"></i>
                                 <span>회원가입!</span>
                                 <div class="btn-glow"></div>
