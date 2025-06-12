@@ -1,9 +1,13 @@
 package www.silver.hom;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -50,14 +54,16 @@ public class MailController {
     }
     
     // 이메일 전송 처리
-    @PostMapping("/mailsend")
-    @ResponseBody
+    @PostMapping(value = "/mailsend", 
+            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public String mailsend(
-        @RequestParam(value = "address") String address,
-        @RequestParam(value = "title") String title,
-        @RequestParam(value = "message") String message) {
-
+    		    @RequestParam(value = "address",required=false,defaultValue = "dzknight@naver.com") String address,
+    		    @RequestParam(value = "title",required=false,defaultValue = "회원가입메시지") String title,
+    		    @RequestParam(value = "message",required=false,defaultValue = "1111") String message) {
         try {
+//        	String address=params.get("address");
+//        	String title=params.get("title");
+//        	String message=params.get("message");
             MailVO mailvo = new MailVO();
             mailvo.setFromaddress("dzknight11@naver.com");
             mailvo.setAddress(address);

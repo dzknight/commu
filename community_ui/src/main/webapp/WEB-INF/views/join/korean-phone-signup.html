@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>한국 전화번호 인증 - 회원가입</title>
+    <link rel="stylesheet" href="korean-phone-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="korean-signup-container">
+        <!-- 한국 전통 패턴 배경 -->
+        <div class="korean-pattern-bg">
+            <div class="pattern-element pattern-1"></div>
+            <div class="pattern-element pattern-2"></div>
+            <div class="pattern-element pattern-3"></div>
+        </div>
+
+        <div class="signup-card">
+            <!-- 헤더 섹션 -->
+            <div class="card-header">
+                <div class="logo-section">
+                    <div class="korean-flag">🇰🇷</div>
+                    <h1>전화번호 인증</h1>
+                    <p class="subtitle">대한민국 휴대폰 번호로 안전하게 인증하세요</p>
+                </div>
+                
+                <!-- 태극 패턴 장식 -->
+                <div class="taegeuk-decoration">
+                    <div class="taegeuk-symbol"></div>
+                </div>
+            </div>
+
+            <form id="koreanPhoneForm" class="phone-verification-form">
+                <!-- 전화번호 타입 선택 -->
+                <div class="phone-type-selector">
+                    <div class="selector-header">
+                        <i class="fas fa-mobile-alt"></i>
+                        <span>전화번호 유형 선택</span>
+                    </div>
+                    
+                    <div class="type-options">
+                        <label class="type-option active" data-type="mobile">
+                            <input type="radio" name="phoneType" value="mobile" checked>
+                            <div class="option-content">
+                                <i class="fas fa-mobile-alt"></i>
+                                <span class="option-title">휴대폰</span>
+                                <span class="option-format">010-0000-0000</span>
+                            </div>
+                            <div class="option-checkmark">
+                                <i class="fas fa-check"></i>
+                            </div>
+                        </label>
+
+                        <label class="type-option" data-type="landline">
+                            <input type="radio" name="phoneType" value="landline">
+                            <div class="option-content">
+                                <i class="fas fa-phone"></i>
+                                <span class="option-title">일반전화</span>
+                                <span class="option-format">02-0000-0000</span>
+                            </div>
+                            <div class="option-checkmark">
+                                <i class="fas fa-check"></i>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 지역 선택 (일반전화용) -->
+                <div class="region-selector" id="regionSelector" style="display: none;">
+                    <label class="input-label">
+                        <i class="fas fa-map-marker-alt"></i>
+                        지역 선택
+                    </label>
+                    <div class="custom-select">
+                        <div class="select-display" id="regionDisplay">
+                            <span class="selected-text">지역을 선택하세요</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="select-dropdown" id="regionDropdown">
+                            <div class="dropdown-search">
+                                <input type="text" placeholder="지역 검색..." id="regionSearch">
+                            </div>
+                            <div class="dropdown-options">
+                                <div class="dropdown-option" data-code="02" data-name="서울특별시" data-pattern="^\d{3,4}-\d{4}$">
+                                    <span class="region-name">서울특별시</span>
+                                    <span class="region-code">02</span>
+                                </div>
+                                <div class="dropdown-option" data-code="031" data-name="경기도" data-pattern="^\d{3,4}-\d{4}$">
+                                    <span class="region-name">경기도</span>
+                                    <span class="region-code">031</span>
+                                </div>
+                                <div class="dropdown-option" data-code="032" data-name="인천광역시" data-pattern="^\d{3,4}-\d{4}$">
+                                    <span class="region-name">인천광역시</span>
+                                    <span class="region-code">032</span>
+                                </div>
+                                <div class="dropdown-option" data-code="033" data-name="강원도" data-pattern="^\d{3,4}-\d{4}$">
+                                    <span class="region-name">강원도</span>
+                                    <span class="region-code">033</span>
+                                </div>
+                                <div class="dropdown-option" data-code="041" data-name="충청남도" data-pattern="^\d{3,4}-\d{4}$">
+                                    <span class="region-name">충청남도</span>
+                                    <span class="region-code">041</span>
+                                </div>
+                                <div class="dropdown-option" data-code="042" data-name="대전광역시" data-pattern="^\d{3,4}-\d{4}$">
+                                    <span class="region-name">대전광역시</span>
+                                    <span class="region-code">042</span>
+                                </div>
+                                <div class="dropdown-option" data-code="043" data-name="충청북도" data-pattern="^\d{3,4}-\d{4}$">
+                                    <span class="region-name">충청북도</span>
+                                    <span class="region-code">043</span>
+                                </div>
+                                <div class="dropdown-option" data-code="044" data-name="세종특별자치시" data-pattern="^\d{3,4}-\d{4}$">
+                                    <span class="region-name">세종특별자치시</span>
+                                    <span class="region-code">044</span>
+                                </div>
+                                <div class="dropdown-option" data-code="051" data-name="부산광역시" data-pattern="^\d{3,4}-\d{4}$">
+                                    <span class="region-name">부산광역시</span>
+                                    <span class="region-code">051</span>
+                                </div>
+                                <div class="dropdown-option" data-code="052" data-name="울산광역시" data-pattern="^\d{3,4}-\d{4}$">
+                                    <span class="region-name">울산광역시</span>
+                                    <span class="region-code">052</span>
+                                </div>
+                                <div class="dropdown-option" data-code="053" data-name="대구광역시" data-pattern="^\d{3,4}-\d{4}$">
+                                    <span class="region-name">대구광역시</span>
+                                    <span class="region-code">053</span>
+                                </div>
+                                <div class="dropdown-option" data-code="054" data-name="경상북도" data-pattern="^\d{3,4}-\d{4}$">
+                                    <span class="region-name">경상북도</span>
+                                    <span class="region-code">054</span>
+                                </div>
+                                <div class="dropdown-option" data-code="055" data-name="경상남도" data-pattern="^\d{3,4}-\d{4}$">
+                                    <span class="region-name">경상남도</span>
+                                    <span class="region-code">055</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 전화번호 입력 섹션 -->
+                <div class="phone-input-section">
+                    <label class="input-label">
+                        <i class="fas fa-phone"></i>
+                        전화번호 입력
+                    </label>
+                    
+                    <div class="korean-phone-input" id="phoneInputContainer">
+                        <!-- 국가코드 표시 -->
+                        <div class="country-code-display">
+                            <span class="flag">🇰🇷</span>
+                            <span class="code">+82</span>
+                        </div>
+                        
+                        <!-- 지역코드/휴대폰코드 표시 -->
+                        <div class="area-code-display" id="areaCodeDisplay">
+                            <span id="areaCodeText">010</span>
+                        </div>
+                        
+                        <!-- 번호 입력 필드 -->
+                        <input type="tel" 
+                               id="phoneNumber" 
+                               name="phoneNumber"
+                               class="phone-number-input"
+                               placeholder="0000-0000"
+                               maxlength="9"
+                               autocomplete="tel">
+                        
+                        <!-- 검증 상태 표시 -->
+                        <div class="validation-status" id="validationStatus">
+                            <div class="status-icon loading">
+                                <i class="fas fa-spinner fa-spin"></i>
+                            </div>
+                            <div class="status-icon valid">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="status-icon invalid">
+                                <i class="fas fa-times-circle"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 실시간 검증 메시지 -->
+                    <div class="validation-message" id="validationMessage"></div>
+                    
+                    <!-- 전화번호 형식 가이드 -->
+                    <div class="format-guide" id="formatGuide">
+                        <div class="guide-header">
+                            <i class="fas fa-info-circle"></i>
+                            <span>입력 형식 안내</span>
+                        </div>
+                        <div class="guide-content">
+                            <div class="format-example">
+                                <span class="example-label">휴대폰:</span>
+                                <span class="example-format">010-1234-5678</span>
+                            </div>
+                            <div class="format-example">
+                                <span class="example-label">일반전화:</span>
+                                <span class="example-format">02-1234-5678</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 인증번호 섹션 -->
+                <div class="verification-section" id="verificationSection" style="display: none;">
+                    <div class="verification-header">
+                        <i class="fas fa-shield-alt"></i>
+                        <h3>인증번호 확인</h3>
+                        <p>입력하신 번호로 전송된 6자리 인증번호를 입력해주세요</p>
+                    </div>
+                    
+                    <div class="verification-input-container">
+                        <div class="verification-code-inputs" id="verificationInputs">
+                            <input type="text" maxlength="1" class="code-input" data-index="0">
+                            <input type="text" maxlength="1" class="code-input" data-index="1">
+                            <input type="text" maxlength="1" class="code-input" data-index="2">
+                            <input type="text" maxlength="1" class="code-input" data-index="3">
+                            <input type="text" maxlength="1" class="code-input" data-index="4">
+                            <input type="text" maxlength="1" class="code-input" data-index="5">
+                        </div>
+                        
+                        <div class="verification-timer" id="verificationTimer">
+                            <i class="fas fa-clock"></i>
+                            <span id="timerDisplay">05:00</span>
+                        </div>
+                    </div>
+                    
+                    <div class="verification-actions">
+                        <button type="button" class="resend-btn" id="resendBtn">
+                            <i class="fas fa-redo"></i>
+                            인증번호 재전송
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 진행 단계 표시 -->
+                <div class="progress-steps">
+                    <div class="step active" data-step="1">
+                        <div class="step-circle">
+                            <span class="step-number">1</span>
+                            <i class="fas fa-check step-check"></i>
+                        </div>
+                        <span class="step-label">번호입력</span>
+                    </div>
+                    <div class="step-connector"></div>
+                    <div class="step" data-step="2">
+                        <div class="step-circle">
+                            <span class="step-number">2</span>
+                            <i class="fas fa-check step-check"></i>
+                        </div>
+                        <span class="step-label">인증확인</span>
+                    </div>
+                    <div class="step-connector"></div>
+                    <div class="step" data-step="3">
+                        <div class="step-circle">
+                            <span class="step-number">3</span>
+                            <i class="fas fa-check step-check"></i>
+                        </div>
+                        <span class="step-label">완료</span>
+                    </div>
+                </div>
+
+                <!-- 액션 버튼들 -->
+                <div class="action-buttons">
+                    <button type="button" class="primary-btn" id="sendCodeBtn" disabled>
+                        <i class="fas fa-paper-plane"></i>
+                        <span>인증번호 전송</span>
+                        <div class="btn-loading">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                    </button>
+                    
+                    <button type="button" class="primary-btn" id="verifyBtn" style="display: none;" disabled>
+                        <i class="fas fa-check"></i>
+                        <span>인증 확인</span>
+                        <div class="btn-loading">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                    </button>
+                    
+                    <button type="submit" class="success-btn" id="completeBtn" style="display: none;">
+                        <i class="fas fa-user-plus"></i>
+                        <span>회원가입 계속</span>
+                    </button>
+                </div>
+
+                <!-- 개인정보 동의 -->
+                <div class="privacy-agreement">
+                    <label class="agreement-checkbox">
+                        <input type="checkbox" id="privacyCheck" required>
+                        <span class="checkmark">
+                            <i class="fas fa-check"></i>
+                        </span>
+                        <span class="agreement-text">
+                            SMS 인증을 위한 개인정보 수집 및 이용에 동의합니다.
+                            <a href="#" class="privacy-link">자세히 보기</a>
+                        </span>
+                    </label>
+                </div>
+            </form>
+        </div>
+
+        <!-- 성공 모달 -->
+        <div class="success-modal" id="successModal" style="display: none;">
+            <div class="modal-content">
+                <div class="success-animation">
+                    <div class="check-circle">
+                        <i class="fas fa-check"></i>
+                    </div>
+                </div>
+                <h2>인증 완료!</h2>
+                <p>전화번호 인증이 성공적으로 완료되었습니다.</p>
+                <button type="button" class="modal-btn" onclick="closeSuccessModal()">
+                    계속하기
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="korean-phone-validation.js"></script>
+</body>
+</html>

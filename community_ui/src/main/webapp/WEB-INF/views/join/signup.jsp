@@ -3,16 +3,413 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="회원가입 페이지로, 사용자 정보를 입력하고 여권 사진을 업로드하여 회원 가입을 진행합니다.">
-<title>회원가입</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/join.css">
-<script src="${pageContext.request.contextPath}/resources/js/common.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-<script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="회원가입 페이지로, 사용자 정보를 입력하고 여권 사진을 업로드하여 회원 가입을 진행합니다.">
+    <title>회원가입</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/join.css">
+    <script src="${pageContext.request.contextPath}/resources/js/common.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <!-- JavaScript 파일들 -->
+	<script src="${pageContext.request.contextPath}/resources/js/postmodern-signup.js"></script>
+</head>
+
+
+
+<body>
+    <!-- 포스트모던 배경 요소들 -->
+    <div class="postmodern-bg">
+        <div class="floating-shape shape-triangle"></div>
+        <div class="floating-shape shape-circle"></div>
+        <div class="floating-shape shape-square"></div>
+        <div class="floating-shape shape-pentagon"></div>
+        <div class="grid-overlay"></div>
+        <div class="neon-strips">
+            <div class="strip strip-1"></div>
+            <div class="strip strip-2"></div>
+            <div class="strip strip-3"></div>
+        </div>
+    </div>
+
+    <div class="postmodern-container">
+        <!-- 헤더 섹션 -->
+        <header class="signup-header">
+            <div class="header-content">
+                <h1 class="main-title">
+                    <span class="title-part-1">회원</span>
+                    <span class="title-part-2">가입</span>
+                    <span class="title-part-3">페이지</span>
+                    <span class="title-part-4">입니다</span>
+                </h1>
+                <div class="subtitle-container">
+                    <p class="subtitle">커뮤니티 회원 가입페이지입니다</p>
+                    <div class="decorative-elements">
+                        <span class="deco-icon">🎭</span>
+                        <span class="deco-icon">🎨</span>
+                        <span class="deco-icon">🚀</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 메인 폼 -->
+        <main class="signup-main">
+            <form action="${pageContext.request.contextPath}/join" method="post"
+                  enctype="multipart/form-data" id="signUpForm" 
+                  data-context-path="${pageContext.request.contextPath}"
+                  class="postmodern-form">
+                
+                <!-- 진행 단계 표시 -->
+                <div class="progress-indicator">
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span class="current-step">01</span>
+                        <span class="divider">/</span>
+                        <span class="total-steps">05</span>
+                        <span class="step-label">디지털 계정 만들기</span>
+                    </div>
+                </div>
+
+                <!-- 섹션 1: 기본 정보 -->
+                <section class="form-section identity-section">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <span class="section-number">01</span>
+                            <span class="section-text">첫걸음</span>
+                            <div class="title-decoration"></div>
+                        </h2>
+                    </div>
+
+                    <div class="form-grid">
+                        <!-- 아이디 입력 -->
+                        <div class="form-group neon-purple">
+                            <label for="userId" class="form-label">
+                                <i class="fas fa-user-secret"></i>
+                                디지털 닉네임을 선택하세요
+                            </label>
+                            <div class="input-container">
+                                <input type="text" name="userId" id="userId" 
+                                       maxlength="10" placeholder="유니크한 아이디를 선택하세요"
+                                       pattern="[a-zA-Z0-9]{4,10}" required
+                                       class="postmodern-input">
+                                <button type="button" id="idCheckBtn" class="check-btn">
+                                    <span>검증</span>
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                            <div class="validation-message" id="idCheckStatus"></div>
+                        </div>
+
+                        <!-- 비밀번호 -->
+                        <div class="form-group neon-cyan">
+                            <label for="userPassword" class="form-label">
+                                <i class="fas fa-lock"></i>
+                                Secret Code
+                            </label>
+                            <div class="input-container">
+                                <input type="password" name="userPassword" id="userPassword"
+                                       placeholder="비밀번호를 입력하세요" required maxlength="12"
+                                       class="postmodern-input">
+                                <div class="password-strength">
+                                    <div class="strength-bar"></div>
+                                </div>
+                            </div>
+                            <div class="validation-message" id="passwordCheck1"></div>
+                        </div>
+
+                        <!-- 비밀번호 확인 -->
+                        <div class="form-group neon-pink">
+                            <label for="userPasswordConfirm" class="form-label">
+                                <i class="fas fa-shield-alt"></i>
+                                비밀번호 재입력
+                            </label>
+                            <div class="input-container">
+                                <input type="password" name="userPasswordConfirm" 
+                                       id="userPasswordConfirm" placeholder="비밀번호를 다시 입력하세요"
+                                       required maxlength="12" class="postmodern-input">
+                            </div>
+                            <div class="validation-message" id="passwordCheck2"></div>
+                        </div>
+
+                        <!-- 이름 -->
+                        <div class="form-group neon-yellow">
+                            <label for="userName" class="form-label">
+                                <i class="fas fa-signature"></i>
+                                이름 입력
+                            </label>
+                            <div class="input-container">
+                                <input type="text" name="userName" id="userName" 
+                                       placeholder="실명을 입력하세요" required maxlength="10"
+                                       pattern="[가-힣]{2,10}" class="postmodern-input">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 섹션 2: 위치 정보 -->
+                <section class="form-section location-section">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <span class="section-number">02</span>
+                            <span class="section-text">어디 살고 있나요?</span>
+                            <div class="title-decoration"></div>
+                        </h2>
+                    </div>
+
+                    <div class="form-grid">
+                        <!-- 우편번호 -->
+                        <div class="form-group neon-green">
+                            <label for="zipCode" class="form-label">
+                                <i class="fas fa-map-pin"></i>
+                                우편번호찾기
+                            </label>
+                            <div class="input-container zipcode-container">
+                                <input type="text" name="zipCode" id="zipCode" 
+                                       placeholder="Find your zone..." readonly required
+                                       class="postmodern-input">
+                                <button type="button" class="search-btn" onclick="searchZipcode()">
+                                    <span>찾기</span>
+                                    <i class="fas fa-satellite-dish"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 주소 -->
+                        <div class="form-group neon-orange full-width">
+                            <label for="address" class="form-label">
+                                <i class="fas fa-home"></i>
+                                당신의 거주지는?
+                            </label>
+                            <div class="address-inputs">
+                                <input type="text" id="address" placeholder="자동입력되는 필드입니다"
+                                       readonly required class="postmodern-input address-main">
+                                <input type="text" name="detailAddress" id="detailAddress" 
+                                       placeholder="상세주소를 입력하세요" required maxlength="30"
+                                       class="postmodern-input address-detail">
+                                <input type="hidden" name="address" id="fullAddress">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 섹션 3: 연락처 -->
+                <section class="form-section contact-section">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <span class="section-number">03</span>
+                            <span class="section-text">연락을 지속하기 위해서</span>
+                            <div class="title-decoration"></div>
+                        </h2>
+                    </div>
+
+                    <div class="form-grid">
+                        <!-- 이메일 -->
+                        <div class="form-group neon-purple full-width">
+                            <label for="userEmail" class="form-label">
+                                <i class="fas fa-at"></i>
+                                디지털 이메일 주소
+                            </label>
+                            <div class="email-container">
+                                <div class="email-input-group">
+                                    <input type="text" name="email_id" id="email_id" 
+                                           placeholder="Your ID..." required maxlength="10"
+                                           class="postmodern-input email-id">
+                                    <span class="email-separator">@</span>
+                                    <select name="emailDomain" id="email_domain" required
+                                            class="postmodern-select">
+                                        <option value="naver.com">naver.com</option>
+                                        <option value="gmail.com">gmail.com</option>
+                                        <option value="daum.net">daum.net</option>
+                                        <option value="nate.com">nate.com</option>
+                                        <option value="yahoo.com">yahoo.com</option>
+                                        <option value="hanmail.net">hanmail.net</option>
+                                        <option value="hotmail.com">hotmail.com</option>
+                                        <option value="kakao.com">kakao.com</option>
+                                    </select>
+                                    <input type="hidden" name="email_domain" id="email_domain_input" value="naver.com">
+                                    <input type="hidden" name="fullEmail" id="fullEmail">
+                                    <button type="button" id="emailAuthBtn" class="verify-btn">
+                                        <span>코드 전송</span>
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- 이메일 인증 섹션 -->
+                            <div class="email-auth-section" id="emailAuthSection">
+                                <div class="auth-header">
+                                    <h4>🔐 이메일 인증 포탈</h4>
+                                    <div class="timer-display" id="timer">05:00</div>
+                                </div>
+                                <div class="auth-input-container">
+                                    <input type="text" id="authCode" name="authCode" 
+                                           placeholder="6자리 숫자를 입력하세요" required
+                                           class="postmodern-input auth-input">
+                                    <button type="button" id="verifyCodeBtn" class="verify-btn">
+                                        <span>인증버튼</span>
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                </div>
+                                <div id="emailAuthResult" class="auth-result"></div>
+                            </div>
+                        </div>
+
+                        <!-- 전화번호 -->
+                        <div class="form-group neon-cyan">
+                            <label for="phoneNum" class="form-label">
+                                <i class="fas fa-mobile-alt"></i>
+                                휴대폰 번호
+                            </label>
+                            <div class="phone-container">
+                                <input type="hidden" id="phoneNum" name="userPhoneNum">
+                                <div class="phone-inputs">
+                                    <input type="text" id="phoneNum0" name="userPhoneNum0" 
+                                           maxlength="3" placeholder="010" required
+                                           class="postmodern-input phone-part">
+                                    <span class="phone-separator">-</span>
+                                    <input type="text" id="phoneNum1" name="userPhoneNum1" 
+                                           maxlength="4" placeholder="1234" required
+                                           class="postmodern-input phone-part">
+                                    <span class="phone-separator">-</span>
+                                    <input type="text" id="phoneNum2" name="userPhoneNum2" 
+                                           maxlength="4" placeholder="5678" required
+                                           class="postmodern-input phone-part">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 생년월일 -->
+                        <div class="form-group neon-pink">
+                            <label for="birthdate" class="form-label">
+                                <i class="fas fa-birthday-cake"></i>
+                                생년월일
+                            </label>
+                            <div class="input-container">
+                                <input type="date" name="birthdate" id="birthdate" required
+                                       class="postmodern-input date-input">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 섹션 4: 프로필 이미지 -->
+                <section class="form-section avatar-section">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <span class="section-number">04</span>
+                            <span class="section-text">디지털 아바타를 등록하세요</span>
+                            <div class="title-decoration"></div>
+                        </h2>
+                    </div>
+
+                    <div class="avatar-container">
+                        <div class="upload-zone" id="uploadZone">
+                            <div class="upload-content">
+                                <div class="upload-icon">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <h3>여기에 사진을 드래그하세요</h3>
+                                <p>혹은 파일 찾기</p>
+                                <div class="file-info">
+                                    <span>JPEG, PNG • 최대 10MB</span>
+                                </div>
+                            </div>
+                            <input type="file" id="profileImage" name="profileImageFile" 
+                                   accept="image/jpeg,image/jpg,image/png" >
+                        </div>
+
+                        <div class="ai-options">
+                            <div class="ai-toggle">
+                                <label class="toggle-container">
+                                    <input type="checkbox" id="enableAiConvert" checked>
+                                    <span class="toggle-slider"></span>
+                                    <span class="toggle-label">AI 사진규격 보정</span>
+                                </label>
+                            </div>
+                            <select id="aiProvider" class="postmodern-select">
+                                <option value="idphoto">IdPhoto.AI (추천)</option>
+                            </select>
+                        </div>
+
+                        <div class="image-preview" id="imagePreview" style="display: none;">
+                            <img id="photoPreview" alt="Profile preview">
+                            <div class="preview-actions">
+                                <button type="button" id="restoreOriginal" class="action-btn">
+                                    <i class="fas fa-undo"></i>
+                                    Restore Original
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="photoValidation" class="validation-display"></div>
+                    </div>
+                </section>
+
+                <!-- 섹션 5: 제출 -->
+                <section class="form-section submit-section">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <span class="section-number">05</span>
+                            <span class="section-text">마지막 단계</span>
+                            <div class="title-decoration"></div>
+                        </h2>
+                    </div>
+
+                    <div class="submit-container">
+                        <div class="final-checks">
+                            <div class="check-item" id="checkId">
+                                <i class="fas fa-circle"></i>
+                                <span>신원 확인완료</span>
+                            </div>
+                            <div class="check-item" id="checkPassword">
+                                <i class="fas fa-circle"></i>
+                                <span>비밀번호 검증완료</span>
+                            </div>
+                            <div class="check-item" id="checkEmail">
+                                <i class="fas fa-circle"></i>
+                                <span>이메일 검증완료</span>
+                            </div>
+                            <div class="check-item" id="checkProfile">
+                                <i class="fas fa-circle"></i>
+                                <span>프로필 업로드완료</span>
+                            </div>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button type="reset" id="cancelBtn" class="secondary-btn">
+                                <i class="fas fa-redo"></i>
+                                <span>초기화</span>
+                            </button>
+                            <button type="submit" id="submitBtn" class="primary-btn" disabled>
+                                <i class="fas fa-rocket"></i>
+                                <span>회원가입!</span>
+                                <div class="btn-glow"></div>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </form>
+        </main>
+
+        <!-- 푸터 -->
+        <footer class="signup-footer">
+            <div class="footer-content">
+                <p>© 2025 포스트모던 Signup</p>
+                <div class="footer-icons">
+                    <span>🎨</span>
+                    <span>🚀</span>
+                    <span>🌈</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
 // jQuery 기반 기능들
 $(document).ready(function(){
     let isIdChecked = false;
@@ -139,7 +536,7 @@ $(document).ready(function(){
 <script>
 
 // 이메일 인증번호 전송
-$('#emailAuthBtn').click(function() {
+$('#emailAuthBtn1').click(function() {
     const email = $('#fullEmail').val();
     alert(email);
     if (!email) {
@@ -150,7 +547,7 @@ $('#emailAuthBtn').click(function() {
     $.ajax({
         url: '/mailsend',
         type: 'POST',
-        data: { fullEmail: email },
+        data: { email: email },
         success: function(response) {
         	if (response.success) {
                 $('#emailAuthResult').html('<div class="success">' + response.message + '</div>');
@@ -267,10 +664,10 @@ $('#signUpForm').submit(function(e) {
 document.addEventListener('DOMContentLoaded', function() {
     
     // 전송 버튼 클릭 이벤트 리스너를 등록합니다.
-    document.getElementById('sendBtn').addEventListener('click', function() {
+    document.getElementById('emailAuthBtn').addEventListener('click', function() {
         
         // 입력 필드에서 값을 가져옵니다.
-        const address = document.getElementById('address').value;
+        const address = document.getElementById('fullEmail').value;
         const title = document.getElementById('title').value;
         const message = document.getElementById('message').value;
         
@@ -735,151 +1132,6 @@ async function convertWithIdPhotoAI(file) {
 </script>
 
 
-</head>
-
-<body>
-	<form action="${pageContext.request.contextPath}/join" method="post"
-		enctype="multipart/form-data" id="signUpForm">
-		<table id="signUp">
-			<thead>
-				<tr>
-					<th>회원가입 정보 입력</th>
-				</tr>
-			</thead>
-			<tbody>
-			<tr>
-				<td>
-					<label for="userId">아이디</label>
-					<div class="id-check-container">
-						<input type="text" name="userId" id="userId" maxlength="10"
-							placeholder="아이디를 입력하세요" required onkeyup="validateUserId()">
-						<button type="button" id="idCheckBtn">중복체크</button>
-					</div>
-					<div>
-						<span id="idCheckStatus" style="font-size: small;"></span>
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<label for="userPassword">비밀번호</label> 
-					<input type="password" name="userPassword" id="userPassword"
-						placeholder="비밀번호를 입력하세요" required maxlength="12">
-					<div id="passwordCheck1"></div>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<label for="userPasswordConfirm">비밀번호 확인</label> 
-					<input type="password" name="userPasswordConfirm" id="userPasswordConfirm" 
-						placeholder="비밀번호를 한 번 더 입력하세요" required maxlength="12">
-					<div id="passwordCheck2"></div>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<label for="userName">이름</label> 
-					<input type="text" name="userName" id="userName" placeholder="이름을 입력하세요" 
-						required maxlength="10" pattern="[가-힣]{2,10}" 
-						title="이름은 한글로 2자 이상 10자 이하로 입력해주세요." onkeyup="validateUserName()">	
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<label for="zipCode">우편번호</label>
-					<input type="text" name="zipCode" id="zipCode" placeholder="우편번호" readonly required>
-					<button type="button" class="zipcode-btn" onclick="searchZipcode()">우편번호검색</button>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<label for="address">주소</label>
-					<input type="text" id="address" placeholder="주소를 입력하세요" readonly required>
-				    <input type="text" name="detailAddress" id="detailAddress" placeholder="상세 주소를 입력하세요" required>
-					<input type="hidden" name="address" id="fullAddress">
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<label for="userEmail">이메일</label>
-					<div class="email-group">
-						<input type="text" name="email_id" id="email_id" placeholder="이메일 아이디" 
-							required onkeyup="validateEmail()" maxlength="10" />
-						<span>@</span>
-						<input type="hidden" name="email_domain" id="email_domain_input" value="naver.com" required />   
-						<select name="emailDomain" id="email_domain" required>
-							<option value="naver.com" selected>naver.com</option>
-							<option value="gmail.com">gmail.com</option>
-							<option value="daum.net">daum.net</option>
-							<option value="nate.com">nate.com</option>
-							<option value="yahoo.com">yahoo.com</option>
-							<option value="hanmail.net">hanmail.net</option>
-							<option value="hotmail.com">hotmail.com</option>
-							<option value="kakao.com">kakao.com</option>
-						</select>
-						<input type="text" name="fullEmail" id="fullEmail">
-						<button type="button" name="email" id="emailAuthBtn">인증메일 보내기</button>
-					</div>
-                    <div class="email-auth-section">
-                        <h4>이메일 인증</h4>
-                        <div class="form-group" id="authCodeSection">
-                            <label>인증 번호</label>
-                            <input type="text" id="authCode" name="authCode" placeholder="6자리 인증 번호를 입력하세요" required>
-                            <button type="button" id="verifyCodeBtn" class="btn btn-success">인증확인</button>
-                            <div id="timer" class="error"></div>
-                        </div>
-                        <div id="emailAuthResult"></div>
-                    </div>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<label for="phoneNum">휴대폰번호</label> 
-					<input type="text" id="phoneNum" name="userPhoneNum" maxlength="11" 
-						placeholder="숫자만 입력" required>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<label for="birthdate">생년월일:</label>
-					<input type="date" name="birthdate" id="birthdate" required onchange="validateBirthdate()" />
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<label for="profileImage">프로필 사진 (여권 규격):</label>
-					<!-- AI 변환 옵션 -->
-			        <div class="ai-convert-options">
-			            <label>
-			                <input type="checkbox" id="enableAiConvert" checked> 
-			                AI 자동 여권사진 변환 사용
-			            </label>
-			            <select id="aiProvider">
-			                <option value="idphoto">IdPhoto.AI (권장)</option>
-			            </select>
-			        </div>
-			        
-			        <input type="file" id="profileImage" name="profileImageFile" accept="image/jpeg,image/jpg,image/png">
-			        <div id="photoValidation"></div>
-			        <img id="photoPreview" class="profile-preview" style="display: none;" alt="프로필 사진 미리보기">
-			        
-			        <!-- 원본 이미지 복원 버튼 -->
-			        <button type="button" id="restoreOriginal" style="display: none; margin-top: 10px;">
-			            원본 이미지로 복원
-			        </button>
-			    </td>
-			</tr>
-			<tr>
-				<td>
-					<div class="button-group">
-						<button type="submit" id="submitBtn">가입</button>
-						<button type="reset" id="cancelBtn">초기화</button>
-					</div>
-				</td>
-			</tr>
-			</tbody>
-		</table>
-	</form>
 </body>
 
 </html>

@@ -145,19 +145,19 @@ public class signUpController {
     // 이메일 인증번호 전송 (AJAX)
     @RequestMapping(value = "/send-email-auth", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> sendEmailAuth(@RequestParam String fullEmail) {
+    public Map<String, Object> sendEmailAuth(@RequestParam String address) {
         Map<String, Object> result = new HashMap<>();
         
         try {
         	 // 이메일 형식 검증
-            if (fullEmail == null || fullEmail.trim().isEmpty()) {
+            if (address == null || address.trim().isEmpty()) {
                 result.put("success", false);
                 result.put("message", "이메일을 입력해주세요.");
                 return result;
             }
             
-            System.out.println("인증번호가 전송되었습니다."+fullEmail);
-            emailservice.sendAuthEmail(fullEmail);
+            System.out.println("인증번호가 전송되었습니다."+address);
+            emailservice.sendAuthEmail(address);
             result.put("success", true);
             result.put("message", "인증번호가 전송되었습니다.");
         }   catch (Exception e) {

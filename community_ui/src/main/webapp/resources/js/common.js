@@ -2,6 +2,46 @@
 // 공통 자바스크립트 함수들
 // 이 파일은 HTML 문서에서 공통적으로 사용되는 자바스크립트 함수들을 포함합니다.
 
+//회원 이미 유효성 검증
+function validateUserName() {
+    const userNameInput = document.getElementById('userName');
+    const userName = userNameInput.value.trim();
+    const namePattern = /^[가-힣]{2,10}$/;
+
+    if (userName === '') {
+        userNameInput.setCustomValidity('이름을 입력해주세요.');
+        userNameInput.reportValidity();
+    } else if (!namePattern.test(userName)) {
+        userNameInput.setCustomValidity('이름은 한글로 2자 이상 10자 이하로 입력해주세요.');
+        userNameInput.reportValidity();
+    } else {
+        userNameInput.setCustomValidity('');
+    }
+    updateSubmitButtonState();
+}
+// 회원아이디 유효성 검사 함수
+function validateUserId() {
+    const userId = document.getElementById('userId').value;
+    const idCheckStatus = document.getElementById('idCheckStatus');
+    
+    // 아이디 유효성 검사 (영문, 숫자만 허용)
+    const idPattern = /^[a-zA-Z0-9]+$/;
+    if (!idPattern.test(userId)) {
+        idCheckStatus.textContent = '아이디는 영문과 숫자만 사용 가능합니다.';
+        idCheckStatus.style.color = 'red';
+    } else {
+        idCheckStatus.textContent = '';
+    }
+    if (userId.length < 4 || userId.length > 20) {
+        idCheckStatus.textContent = '아이디는 4자 이상 20자 이하로 입력해주세요.';
+        idCheckStatus.style.color = 'red';
+
+    }
+    if (userId === '') {
+        userId.setCustomValidity('아이디를 입력해주세요.');
+        idCheckStatus.style.color = 'red';
+    }
+}
 // 우편번호 검색 함수
 function searchZipcode() {
     new daum.Postcode({

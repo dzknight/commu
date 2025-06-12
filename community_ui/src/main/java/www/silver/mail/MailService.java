@@ -55,6 +55,7 @@ public class MailService {
         
         // Redis에 인증번호 저장 (5분 만료)
         String redisKey = AUTH_CODE_PREFIX + toEmail;
+        System.out.println("key"+authCode);
         redisUtil.setDataExpire(redisKey, authCode, AUTH_CODE_EXPIRE_TIME);
     }
     
