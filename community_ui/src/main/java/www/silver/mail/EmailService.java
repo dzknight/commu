@@ -1,45 +1,25 @@
 package www.silver.mail;
 
-import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import www.silver.util.RedisUtil;
-import www.silver.vo.MailVO;
 
-// 메일 전송을 담당하는 서비스 클래스를 생성
 @Service
-public class MailService {
-    private final JavaMailSender mailSender;
+public class EmailService {
     
-    
+    @Autowired
+    private JavaMailSender mailSender;
     
     @Autowired
     private RedisUtil redisUtil;
     
     private static final String AUTH_CODE_PREFIX = "AuthCode:";
     private static final long AUTH_CODE_EXPIRE_TIME = 300; // 5분
-    
-    @Autowired
-    public MailService(JavaMailSender mailSender) {
-        this.mailSender = mailSender;
-    }
-    
-    // 1. 단순 텍스트 메일 전송
-    public void mailSend(MailVO mailvo) {
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setFrom(mailvo.getFromaddress());
-        simpleMailMessage.setTo(mailvo.getAddress());
-        simpleMailMessage.setSubject(mailvo.getTitle());
-        simpleMailMessage.setText(mailvo.getMessage());
-        mailSender.send(simpleMailMessage);
-    }
     
     // 인증번호 이메일 전송
     public void sendAuthEmail(String toEmail) throws Exception {
@@ -55,8 +35,32 @@ public class MailService {
         
         // Redis에 인증번호 저장 (5분 만료)
         String redisKey = AUTH_CODE_PREFIX + toEmail;
-        System.out.println("key"+authCode);
         redisUtil.setDataExpire(redisKey, authCode, AUTH_CODE_EXPIRE_TIME);
+    }
+    
+    // 인증번호 검증
+    public boolean verifyAuthCode(String email, String inputCode) {
+        String redisKey = AUTH_CODE_PREFIX + email;
+        String storedCode = redisUtil.getData(redisKey);
+        
+        if (storedCode != null && storedCode.equals(inputCode)) {
+            // 인증 성공 시 Redis에서 삭제
+            redisUtil.deleteData(redisKey);
+            
+            // 인증 완료 표시 (10분간 유효)
+            String verifiedKey = "Verified:" + email;
+            redisUtil.setDataExpire(verifiedKey, "true", 600);
+            
+            return true;
+        }
+        
+        return false;
+    }
+    
+    // 이메일 인증 완료 여부 확인
+    public boolean isEmailVerified(String email) {
+        String verifiedKey = "Verified:" + email;
+        return redisUtil.existData(verifiedKey);
     }
     
     // 실제 이메일 전송
@@ -68,17 +72,6 @@ public class MailService {
         helper.setTo(toEmail);
         helper.setSubject(subject);
         helper.setText(content, true);
-        
-        mailSender.send(message);
-    }
-    // 2. HTML 형식 메일 전송
-    public void sendHtmlMail(MailVO mailvo) throws MessagingException {
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-        
-        helper.setTo(mailvo.getAddress());
-        helper.setSubject(mailvo.getTitle());
-        helper.setText(mailvo.getMessage(), true); // true: HTML 형식으로 전송
         
         mailSender.send(message);
     }

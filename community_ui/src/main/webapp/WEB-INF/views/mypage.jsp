@@ -1,12 +1,12 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page session="true"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page isELIgnored="false" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>마이페이지</title>
 <style>
 @charset "UTF-8";
 
@@ -182,7 +182,7 @@ body {
 </head>
 <body>
 <%@ include file="./common/top.jsp" %>
-   
+    
 	<div id="middle">
 		    <div id="my">
 		    <c:choose>
@@ -194,26 +194,47 @@ body {
 			     </c:otherwise>
 		    </c:choose>
 	       
-	        <button id="update">프로필 수정</button>
+	        <a href="${pageContext.request.contextPath}/memberview" class="btn btn-mypage"><i class="fas fa-user"></i> 회원정보보기</a>
+	        <a href="${pageContext.request.contextPath}/membermod" class="btn btn-mypage"><i class="fas fa-user"></i> 회원정보수정</a>
 	        <a href="${pageContext.request.contextPath}/passreset" class="btn btn-mypage"><i class="fas fa-user"></i> 비번 재설정</a> 
 	    </div>
 	    <div id="scrap">
-	        <div id="data">
-	        </div>
-	        <span id="scraptext">${sessionScope.loginUser.userId}님의 좋아요</span>
-	    </div>
+            <div id="data">
+            </div>
+            <c:choose>
+                <c:when test="${not empty sessionScope.loginUser}">
+                    <span id="scraptext">${sessionScope.loginUser.userId}님의 좋아요</span>
+                </c:when>
+                <c:otherwise>
+                    <span id="scraptext">로그인이 필요합니다</span>
+                </c:otherwise>
+            </c:choose>
+        </div>
 	</div>
 	<div id="dawn">
-	    <button id="setting">회원 탈퇴</button>
-	    <div id="dash">
-	        <span>총 조회수: ${totalview != null ? totalview : 0},받은 좋아요 수</span>
-	    </div>
+	      <a href="${pageContext.request.contextPath}/memberdel" class="btn btn-mypage"><i class="fas fa-user"></i> 회원탈퇴</a>
+        <div id="dash">
+            <span>
+                총 조회수: 
+                <c:choose>
+                    <c:when test="${not empty totalview}">
+                        ${totalview}
+                    </c:when>
+                    <c:otherwise>
+                        0
+                    </c:otherwise>
+                </c:choose>
+                ,받은 좋아요 수
+            </span>
+        </div>
 	</div>
-	<footer class="footer">
-	    <div class="footer-links">
-	        <a href="#">이용약관</a> | <a href="#">개인정보처리방침</a> | <a href="#">고객센터</a>
-	    </div>
-	    <p>© 2025 커뮤니티. All rights reserved.</p>
-	</footer>
+
+
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="#">이용약관</a> | <a href="#">개인정보처리방침</a> | <a href="#">고객센터</a>
+        </div>
+        <p>© 2025 커뮤니티. All rights reserved.</p>
+    </footer>
 </body>
 </html>

@@ -6,7 +6,7 @@
     <title>이메일 보내기</title>
 </head>
 <body>
-    <form action="${pageContext.request.contextPath}/sendmail" method="post">
+    <form action="${pageContext.request.contextPath}/mailsend" method="post">
         <h2>이메일 보내기</h2>
         <table>
             <tr>

@@ -122,16 +122,16 @@
         <form action="${pageContext.request.contextPath}/member/membermodF" method="post" enctype="multipart/form-data" id="memberForm">
             <!-- 프로필 사진 영역 -->
             <div class="profile-container">
-                <c:choose>
-                    <c:when test="${not empty member.profile_img && member.profile_img != 'default.jpg'}">
-                        <img src="${pageContext.request.contextPath}/resources/uploads/${member.profile_img}" 
-                             class="profile-image" alt="프로필 사진" id="profilePreview">
-                    </c:when>
-                    <c:otherwise>
-                        <img src="${pageContext.request.contextPath}/resources/images/default.jpg" 
-                             class="profile-image" alt="기본 프로필" id="profilePreview">
-                    </c:otherwise>
-                </c:choose>
+	            <c:choose>
+	                <c:when test="${not empty member.profile_img && member.profile_img != 'default.jpg'}">
+	                    <img src="${pageContext.request.contextPath}/resources/uploads/${member.profile_img}" 
+	                         class="profile-image" alt="프로필 사진">
+	                </c:when>
+	                <c:otherwise>
+	                    <img src="${pageContext.request.contextPath}/resources/images/default.jpg" 
+	                         class="profile-image" alt="기본 프로필">
+	                </c:otherwise>
+	            </c:choose>
                 <div class="profile-upload">
                     <input type="file" name="profileImage" id="profileImage" accept="image/*" style="display: none;">
                     <button type="button" class="btn btn-secondary btn-small" onclick="document.getElementById('profileImage').click();">
@@ -210,7 +210,7 @@
             
             <div style="text-align: center; margin-top: 30px;">
                 <button type="submit" class="btn btn-primary">수정 완료</button>
-                <a href="${pageContext.request.contextPath}/member/passreset" class="btn btn-secondary">취소</a>
+                <a href="${pageContext.request.contextPath}/member/passresetF" class="btn btn-secondary">취소</a>
                 
             </div>
         </form>

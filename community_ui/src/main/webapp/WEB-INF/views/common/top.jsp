@@ -7,9 +7,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Community Header</title>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css">
+<title>카카오 로그인</title>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
 <style>
 @charset "UTF-8";
 
@@ -212,20 +212,45 @@ $(document).ready(function() {
 </head>
 <body>
 <header class="header">
-    <div class="header-inner">
+    <di class="header-inner">
         <a href="${pageContext.request.contextPath}/" class="logo">
             <p class="logo-img">BugBuster</p>
         </a>
-        <a href="${pageContext.request.contextPath}/passreset" class="btn btn-mypage"><i class="fas fa-user"></i> 비번 재설정</a> 
-        <a href="${pageContext.request.contextPath}/memberview" class="btn btn-mypage"><i class="fas fa-user"></i> 회원정보수정(비번 제외)</a> 
+         <header>
+        <c:choose>
+            <c:when test="${not empty sessionScope.loginMember}">
+                <div class="user-info">
+                    <span>안녕하세요, <strong>${sessionScope.loginMember.userName}</strong>님!</span>
+                    <c:if test="${sessionScope.loginMember.loginType == 'KAKAO'}">
+                        <span class="kakao-badge">카카오톡 로그인</span>
+                    </c:if>
+                    <a href="/logout" style="margin-left: 10px;">로그아웃</a>
+                </div>
+            </c:when>
+            <c:otherwise>
+                <a href="/login">로그인</a>
+            </c:otherwise>
+        </c:choose>
+    </header>
+        <a href="javascript:loginWithKakao()">
+            <img src="//mud-kage.kakao.com/14/dn/btqbjxsO6vP/KPiGpdnsubSq3a0PHEGUK1/o.jpg" width="222" alt="카카오 로그인 버튼" />
+        </a>
+        <script>
+            Kakao.init('86ef5b0f9e204aa70b13ea8bb47de612'); // 카카오 앱의 JavaScript 키
+
+            function loginWithKakao() {
+                Kakao.Auth.authorize({
+                    redirectUri: 'http://localhost:8090/hom2/'
+                });
+            }
+        </script>
+        
         <div class="login-area">
             <c:choose>
                 <c:when test="${not empty sessionScope.loginUser}">
-          
                     <div class="user-info">
                         <span class="user-id"><strong>${sessionScope.loginUser.userId}</strong>님</span>
                         <a href="${pageContext.request.contextPath}/mypage" class="btn btn-mypage"><i class="fas fa-user"></i> 마이페이지</a> 
-                       
                         <a href="${pageContext.request.contextPath}/logout" class="btn btn-logout"><i class="fas fa-sign-out-alt"></i> 로그아웃</a>
                     </div>
                 </c:when>

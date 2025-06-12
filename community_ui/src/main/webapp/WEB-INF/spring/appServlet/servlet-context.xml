@@ -27,8 +27,8 @@
     </beans:bean>
     
     <beans:bean class="java.lang.String" id="uploadPath">
-        <beans:constructor-arg value="/tmp"></beans:constructor-arg>  <!--   운용되는 서버 드라이버 -->
-     <!--     <beans:constructor-arg value="c:\tmp"></beans:constructor-arg> --> <!--로컬드라이버-->
+        
+     <beans:constructor-arg value="D:/community0604/src/main/webapp/resources/uploads/"></beans:constructor-arg>  <!--로컬드라이버-->
     </beans:bean>
 	
 	<beans:bean class = "java.lang.String" id = "cname">

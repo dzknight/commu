@@ -24,7 +24,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>${org.springframework-version}</version>
+			<version>5.3.21</version>
 			<exclusions>
 				<!-- SLF4J 사용을 위한 commons-logging 제거 -->
 				<exclusion>
@@ -36,7 +36,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-			<version>${org.springframework-version}</version>
+			<version>5.3.21</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -46,14 +46,27 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
-			<version>${org.springframework-version}</version>
+			<version>5.3.21</version>
 		</dependency>
 
 		<!-- Spring Mail -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
-			<version>${org.springframework-version}</version>
+			<version>5.3.21</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-core</artifactId>
+		    <version>5.3.21</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>com.google.code.findbugs</groupId>
+		    <artifactId>jsr305</artifactId>
+		    <version>3.0.2</version>
+		    <scope>provided</scope>
 		</dependency>
 
 		<!-- Spring batch-->
@@ -67,10 +80,6 @@
 			<artifactId>spring-batch-infrastructure</artifactId>
 			<version>3.0.10.RELEASE</version>
 		</dependency>
-
-
-
-
 
 		<!-- JavaMail -->
 		<dependency>
@@ -224,8 +233,38 @@
 			<artifactId>jackson-databind</artifactId>
 			<version>2.12.5</version> <!-- 최신 버전으로 조정 가능 -->
 		</dependency>
-
-
+		
+		<!-- Jackson for JSON parsing -->
+		<dependency>
+		    <groupId>org.codehaus.jackson</groupId>
+		    <artifactId>jackson-mapper-asl</artifactId>
+		    <version>1.9.13</version>
+		</dependency>
+		
+		<!-- HTTP 클라이언트 -->
+		<dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+		    <artifactId>httpclient</artifactId>
+		    <version>4.5.13</version>
+		</dependency>
+		<!-- Redis 의존성 -->
+		<!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-redis -->
+		<dependency>
+		    <groupId>org.springframework.data</groupId>
+		    <artifactId>spring-data-redis</artifactId>
+		    <version>2.1.0.RELEASE</version>
+		</dependency>
+		<dependency>
+		    <groupId>redis.clients</groupId>
+		    <artifactId>jedis</artifactId>
+		    <version>2.9.3</version>
+		</dependency>
+		<!-- 이메일 전송 의존성 -->
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-context-support</artifactId>
+		    <version>5.3.21</version>
+		</dependency>
 	</dependencies>
 
 	<build>

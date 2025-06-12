@@ -64,6 +64,27 @@ public class MypageController {
 	
 	}
 	
+	@RequestMapping(value = "/memberdel", method = RequestMethod.GET)
+	public String delmember(HttpSession session, Model model) {
+		
+		MemberVO loginUser=(MemberVO) session.getAttribute("loginUser");
+		MemberVO latestMember;
+		try {
+			latestMember = memberservice.getMemberById(loginUser.getUserId());
+			
+			model.addAttribute("member", latestMember);
+			System.out.println(latestMember.getUserId()+"를 삭제합니다");
+			memberservice.deleteMember(latestMember.getUserId());
+			
+			session.invalidate();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return "redirect:/";
+	}
+	
 	@RequestMapping(value = "/passreset", method = RequestMethod.GET)
 	public String passreset(HttpSession session, Model model) {
 		//String loginUserId=(String) session.getAttribute("userId");

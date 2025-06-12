@@ -24,9 +24,54 @@ public class MemberVO {
 	private String profileImagePath; // 저장된 파일 경로 또는 Base64 문자열
     private MultipartFile profileImageFile; // 업로드용 임시 필드
     private Date regDate;//가입일
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+    
+    private boolean emailVerified;
+    
+    
+    public boolean isEmailVerified() {
+		return emailVerified;
+	}
+	public void setEmailVerified(boolean emailVerified) {
+		this.emailVerified = emailVerified;
+	}
+	@DateTimeFormat(pattern="yyyy-MM-dd")
 	private Date birthdate;//생일
-	
+    
+    private String kakaoId;
+    
+    private String loginType;
+    
+    private boolean isKakaoRegistered;
+    // 기본 생성자
+    public MemberVO() {}
+    // 카카오 임시 회원 생성자
+    public MemberVO(String kakaoId, String userName, String userEmail) {
+        this.kakaoId = kakaoId;
+        this.userName = userName;
+        this.userEmail = userEmail;
+        this.loginType = "KAKAO";
+        this.isKakaoRegistered = false;
+        this.profile_img = "default.jpg";
+    }
+    
+	public String getKakaoId() {
+		return kakaoId;
+	}
+	public void setKakaoId(String kakaoId) {
+		this.kakaoId = kakaoId;
+	}
+	public String getLoginType() {
+		return loginType;
+	}
+	public void setLoginType(String loginType) {
+		this.loginType = loginType;
+	}
+	public boolean isKakaoRegistered() {
+		return isKakaoRegistered;
+	}
+	public void setKakaoRegistered(boolean isKakaoRegistered) {
+		this.isKakaoRegistered = isKakaoRegistered;
+	}
 	public String getOldPassword() {
 		return oldPassword;
 	}
