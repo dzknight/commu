@@ -5,19 +5,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import www.silver.vo.PageVO;
 import www.silver.vo.BoardVO;
 import www.silver.vo.CommentVO;
 import www.silver.vo.MemberVO;
-import www.silver.service.IF_writeService;
 import www.silver.util.FileDataUtil;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
@@ -30,84 +26,89 @@ public class WriteController {
 	@Inject
 	FileDataUtil filedatautil;
 
-	@RequestMapping(value = "/fleaMarket", method = RequestMethod.GET)
+	// QAê²Œì‹œíŒ í˜ì´ì§€ë¡œ ë¦¬ë‹¤ì´ë ‰íŠ¸
+	@RequestMapping(value = "/QABoard", method = RequestMethod.GET)
 	public String viewBoard() {
 		return "redirect:boardview";
 	}
 
+	// ê¸€ ì‘ì„± í˜ì´ì§€ë¡œ ì´ë™
 	@RequestMapping(value = "/write", method = RequestMethod.GET)
 	public String write() {
 		return "getuseds/write";
 	}
 
+	// ê²Œì‹œê¸€ ì €ì¥ ì²˜ë¦¬
 	@RequestMapping(value = "/insertContent", method = RequestMethod.POST)
 	public String saveWrite(@ModelAttribute BoardVO boardvo, MultipartFile[] file, HttpSession session)
 			throws Exception {
 		try {
-			// ¼¼¼Ç¿¡¼­ ÀÛ¼ºÀÚ Á¤º¸¸¦ °¡Á®¿À±â
+			// ì„¸ì…˜ì—ì„œ ì‘ì„±ì ì •ë³´ë¥¼ ê°€ì ¸ì˜¤ê¸°
 			MemberVO loginUser = (MemberVO) session.getAttribute("loginUser");
 
 			if (loginUser != null) {
-				boardvo.setWriter(loginUser.getUserId()); // ÀÛ¼ºÀÚ ¼³Á¤
+				boardvo.setWriter(loginUser.getUserId()); // ì‘ì„±ì ì„¤ì •
 			} else {
 				return "common/top";
 			}
 
 			List<String> filename = filedatautil.fileUpload(file);
 			if (filename == null || filename.isEmpty()) {
-				System.out.println("ÆÄÀÏ ¾÷·Îµå ½ÇÆĞ ¶Ç´Â ÆÄÀÏ ¾øÀ½");
+				System.out.println("íŒŒì¼ ì—…ë¡œë“œ ì—†ìŒ ë˜ëŠ” íŒŒì¼ ì—†ìŒ");
 				filename = new ArrayList<>();
 			} else {
-				System.out.println("ÆÄÀÏ ¾÷·Îµå ¼º°ø: " + String.join(", ", filename));
+				System.out.println("íŒŒì¼ ì—…ë¡œë“œ ì„±ê³µ: " + String.join(", ", filename));
 			}
 			boardvo.setFilename(filename);
-			System.out.println("boardvo: " + boardvo.getTitle() + ", " + boardvo.getSaleStatus());
 			writeService.addWrite(boardvo);
-			System.out.println("±Û µî·Ï ¼º°ø, ÆäÀÌÁö ÀÌµ¿");
+			System.out.println("ê¸€ ë“±ë¡ ì„±ê³µ, ê²Œì‹œíŒ ì´ë™");
 			return "redirect:boardview";
 		} catch (Exception e) {
-			System.out.println("±Û µî·Ï ¿À·ù: " + e.getMessage());
+			System.out.println("ê¸€ ë“±ë¡ ì‹¤íŒ¨: " + e.getMessage());
 			e.printStackTrace();
 			return "redirect:/error";
 		}
 	}
 
+	// ê²Œì‹œíŒ ëª©ë¡ í˜ì´ì§€ë¡œ ë¦¬ë‹¤ì´ë ‰íŠ¸
 	@RequestMapping(value = "/boardview", method = RequestMethod.GET)
 	public String boardview() {
 		return "redirect:/paging?page=1";
 	}
 
+	// í˜ì´ì§• ì²˜ë¦¬ëœ ê²Œì‹œíŒ ëª©ë¡ ì¡°íšŒ
 	@GetMapping("/paging")
 	public String paging(Model model, @RequestParam(value = "page", required = false, defaultValue = "1") int page) {
 		if (page < 1) {
-			return "redirect:/paging?page=1"; // ÆäÀÌÁö ¹øÈ£ À¯È¿¼º Ã¼Å©
+			return "redirect:/paging?page=1"; // í˜ì´ì§€ ë²ˆí˜¸ ìœ íš¨ì„± ì²´í¬
 		}
-		System.out.println("¿äÃ»µÈ ÆäÀÌÁö: " + page);
+		System.out.println("ìš”ì²­ëœ í˜ì´ì§€: " + page);
 		List<BoardVO> pagingList = writeService.pagingList(page);
-		System.out.println("ÆäÀÌÂ¡ ¸®½ºÆ® Å©±â: " + pagingList.size());
+		System.out.println("í˜ì´ì§• ë¦¬ìŠ¤íŠ¸ í¬ê¸°: " + pagingList.size());
 		PageVO pagevo = writeService.pagingParam(page);
-		if (pagevo == null) {
-			System.out.println("¿À·ù: pagevo°¡ nullÀÔ´Ï´Ù");
+		/*if (pagevo == null) {
+			System.out.println("ì˜¤ë¥˜: pagevoê°€ nullì…ë‹ˆë‹¤");
 			pagevo = new PageVO();
 			pagevo.setPage(1);
 			pagevo.setMaxPage(1);
 			pagevo.setStartPage(1);
 			pagevo.setEndPage(1);
-		}
+		}*/
 		model.addAttribute("contentlist", pagingList);
 		model.addAttribute("paging", pagevo);
 		return "getuseds/board";
 	}
 
+	// ê²Œì‹œê¸€ ìƒì„¸ ì¡°íšŒ
 	@RequestMapping(value = "/textview", method = RequestMethod.GET)
 	public String textview(@RequestParam("postNum") Long postNum, Model model) {
-		// 1. Á¶È¸¼ö Áõ°¡
+		// ì¡°íšŒìˆ˜ ì¦ê°€
 		writeService.viewCount(postNum);
 
-		// 2. »ó¼¼ ±Û Á¤º¸ °¡Á®¿À±â
+		// ê¸€ ë° ì²¨ë¶€ íŒŒì¼ì •ë³´ ê°€ì ¸ì˜¤ê¸°
 		BoardVO boardvo = writeService.textview(postNum);
 
-		// 3. ¸ğµ¨¿¡ ´ã±â
+
 		model.addAttribute("post", boardvo);
 		List<String> attachList = writeService.getAttach(boardvo.getPostNum());
 		model.addAttribute("attachList", attachList);
@@ -116,113 +117,115 @@ public class WriteController {
 		List<CommentVO> commentList = writeService.getComments(postNum);
 		for (CommentVO comment : commentList) {
 			if (comment.getParentCommentId() == null) {
-				comment.setDepth(0); // ´ñ±Û(ÃÖ»óÀ§)
+				comment.setDepth(0); // ë¶€ëª¨(ìµœìƒìœ„)
 			} else {
-				comment.setDepth(1); // ´ë´ñ±Û(´ä±Û)
+				comment.setDepth(1); // ìì‹(ë‹µê¸€)
 			}
 		}
 		model.addAttribute("commentList", commentList);
 
-		// 4. »ó¼¼º¸±â JSP·Î ÀÌµ¿
+		// 4. ìƒì„¸ë³´ê¸° JSPë¡œ ì´ë™
 		return "getuseds/detailview";
 	}
 
+	// ê²Œì‹œê¸€ ì‚­ì œ ì²˜ë¦¬
 	@RequestMapping(value = "/delete", method = RequestMethod.GET)
 	public String deleteContent(@RequestParam("postNum") Long postNum, @RequestParam("writer") String writer,
-			HttpSession session, RedirectAttributes ra) {
-		// ¼¼¼Ç¿¡¼­ ·Î±×ÀÎ »ç¿ëÀÚ Á¤º¸ °¡Á®¿À±â
+								HttpSession session, RedirectAttributes ra) {
+
 		MemberVO loginUser = (MemberVO) session.getAttribute("loginUser");
 		if (loginUser == null) {
-			System.out.println("»ç¿ëÀÚ Á¤º¸ °ªÀÌ ¾ø½À´Ï´Ù.");
+			System.out.println("ì‚¬ìš©ì ì •ë³´ ì—†ìŒ ë¡œê·¸ì¸í•˜ì„¸ìš”.");
 			return "redirect:/common/top";
 		}
 
-		// ·Î±×ÀÎ »ç¿ëÀÚ¿Í °Ô½Ã±Û ÀÛ¼ºÀÚ È®ÀÎ
+		// ë¡œê·¸ì¸ ì‚¬ìš©ìì™€ ê²Œì‹œê¸€ ì‘ì„±ì í™•ì¸
 		String currentUserId = loginUser.getUserId();
 		if (!currentUserId.equals(writer)) {
-			System.out.println("·Î±×ÀÎÇÑ À¯Àú¿Í ÀÛ¼ºÀÚ Á¤º¸°¡ ÀÏÄ¡ÇÏÁö ¾Ê½À´Ï´Ù.");
+			System.out.println("ë¡œê·¸ì¸í•œ ì‚¬ìš©ì ì‘ì„±ì ì •ë³´ê°€ ì¼ì¹˜í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.");
 			return "redirect:/boardview";
 		}
 
-		// »èÁ¦ Ã³¸®
+		// ì‚­ì œ ì²˜ë¦¬
 		writeService.deleteWrite(postNum);
-		System.out.println("°Ô½Ã±Û »èÁ¦ ¿Ï·áÇß½À´Ï´Ù.");
+		System.out.println("ê²Œì‹œê¸€ ì‚­ì œ ì™„ë£Œí–ˆìŠµë‹ˆë‹¤.");
 		return "redirect:/boardview";
 	}
 
+	// ê²Œì‹œê¸€ ìˆ˜ì • í˜ì´ì§€ë¡œ ì´ë™
 	@RequestMapping(value = "/modify", method = RequestMethod.GET)
 	public String modifyContent(@RequestParam("postNum") Long postNum, HttpSession session, Model model,
-			RedirectAttributes ra) {
-		System.out.println("modifyContent1 ÁøÀÔ Æû º¸¿©ÁÖ´Â ¿ëµµ ");
+								RedirectAttributes ra) {
 		MemberVO loginUser = (MemberVO) session.getAttribute("loginUser");
 
 		BoardVO boardVO = writeService.textview(postNum);
 
-		// ±Û ÀÛ¼ºÀÚ¿Í ·Î±×ÀÎ »ç¿ëÀÚ°¡ ´Ù¸¥ °æ¿ì
+		// ê¸€ ì‘ì„±ìì™€ ë¡œê·¸ì¸ ì‚¬ìš©ìê°€ ë‹¤ë¥¸ ê²½ìš°
 		if (!loginUser.getUserId().equals(boardVO.getWriter())) {
-			System.out.println("±Û ¼öÁ¤Àº ÇØ´ç ±ÛÀ» ÀÛ¼ºÇÑ È¸¿ø¸¸ °¡´ÉÇÕ´Ï´Ù");
+			System.out.println("ê¸€ ìˆ˜ì •ì€ í•´ë‹¹ ê¸€ì˜ ì‘ì„±í•œ íšŒì›ë§Œ ê°€ëŠ¥í•©ë‹ˆë‹¤");
 			return "redirect:/boardview";
 		}
 
-		// ¼öÁ¤ ÆûÀ¸·Î ÀÌµ¿
+		// ìˆ˜ì • í˜ì´ì§€ë¡œ ì´ë™
 		model.addAttribute("boardVO", boardVO);
 		return "getuseds/write";
 	}
 
+	// ê²Œì‹œê¸€ ìˆ˜ì • ì²˜ë¦¬
 	@RequestMapping(value = "/modify", method = RequestMethod.POST)
 	public String modifyContent(@ModelAttribute BoardVO boardvo, @RequestParam("file") MultipartFile[] file,
-			HttpSession session, RedirectAttributes ra) throws Exception {
-		System.out.println("modifyContent ¸Ş¼Òµå ÁøÀÔ ½ÇÁ¦ ¼öÁ¤ ÀÛ¾÷À» ÁøÇà");
+								HttpSession session, RedirectAttributes ra) throws Exception {
 		try {
 			MemberVO loginUser = (MemberVO) session.getAttribute("loginUser");
 
 			if (loginUser == null) {
-				ra.addAttribute("message", "ÇØ´ç ±â´ÉÀº ·Î±×ÀÎÀÌ ÇÊ¿äÇÕ´Ï´Ù.");
+				ra.addAttribute("message", "í•´ë‹¹ ê¸°ëŠ¥ì€ ë¡œê·¸ì¸ì´ í•„ìš”í•©ë‹ˆë‹¤.");
 				return "redirect:/boardview";
 			}
 
 			BoardVO existingBoard = writeService.textview(boardvo.getPostNum());
 			if (!loginUser.getUserId().equals(existingBoard.getWriter())) {
-				System.out.println("È¸¿øÀÇ id¿Í ÀÛ¼ºÀÚÀÇ id°¡ ÀÏÄ¡ÇÏÁö ¾Ê½À´Ï´Ù.");
+				System.out.println("íšŒì›ì˜ idì™€ ì‘ì„±ìì˜ idê°€ ì¼ì¹˜í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.");
 				return "redirect:/boardview";
 			}
 
 			boardvo.setWriter(loginUser.getUserId());
-			// µğ¹ö±ë¿ëÀ¸·Î ¾Æ·¡ Ãâ·Â
-			System.out.println("·Î±×ÀÎÇÑ À¯Àú ID: " + loginUser.getUserId());
-			System.out.println("°Ô½Ã±Û ÀÛ¼ºÀÚ ID: " + boardvo.getWriter());
-			System.out.println("BoardVO ÀüÃ¼: " + boardvo.toString());
+			// ë””ë²„ê¹…ì„ ìœ„í•œ ë¡œê·¸
+			System.out.println("ë¡œê·¸ì¸í•œ ì‚¬ìš©ì ID: " + loginUser.getUserId());
+			System.out.println("ê²Œì‹œê¸€ ì‘ì„±ì ID: " + boardvo.getWriter());
+			System.out.println("BoardVO ê°ì²´: " + boardvo.toString());
 
-			// ÆÄÀÏ ¾÷·Îµå Ã³¸®
+			// íŒŒì¼ ì—…ë¡œë“œ ì²˜ë¦¬
 			List<String> filename = null;
 			try {
 				filename = filedatautil.fileUpload(file);
-				System.out.println("fileUpload ¹İÈ¯°ª: " + filename);
+				System.out.println("fileUpload ë°˜í™˜ê°’: " + filename);
 			} catch (Exception e) {
-				System.out.println("fileUpload ¸Ş¼Òµå¿¡¼­ ¿¹¿Ü ¹ß»ı!");
+				System.out.println("fileUpload ë©”ì†Œë“œì—ì„œ ì˜¤ë¥˜ ë°œìƒ!");
 				e.printStackTrace();
-				System.out.println("ÆÄÀÏ ¾÷·Îµå Áß ¿À·ù°¡ ¹ß»ıÇß½À´Ï´Ù.");
+				System.out.println("íŒŒì¼ ì—…ë¡œë“œ ì¤‘ ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤.");
 				return "redirect:/error";
 			}
 
-			// filenameÀÌ nullÀÌ ¾Æ´Ï°í, ºó ¹®ÀÚ¿­ÀÌ ¾Æ´ÑÁö
+			// filenameì´ nullì´ ì•„ë‹ˆê³ , ë¹ˆ ë¬¸ìì—´ì´ ì•„ë‹ˆë©´
 			if (filename != null && !filename.isEmpty()) {
 				boardvo.setFilename(filename);
-				System.out.println("modifyWrite Ã·ºÎÆÄÀÏ ¸®½ºÆ®: " + boardvo.getFilename());
+				System.out.println("modifyWrite ì²¨ë¶€íŒŒì¼ ë¦¬ìŠ¤íŠ¸: " + boardvo.getFilename());
 			}
 
 			writeService.modifyWrite(boardvo);
-			System.out.println("°Ô½Ã±Û ¼öÁ¤À» ¿Ï·áÇß½À´Ï´Ù.");
+			System.out.println("ê²Œì‹œê¸€ ìˆ˜ì •ì´ ì™„ë£Œí–ˆìŠµë‹ˆë‹¤.");
 			return "redirect:/boardview?postNum=" + boardvo.getPostNum();
 
 		} catch (Exception e) {
-			System.out.println("¿¹¿Ü ¹ß»ı!");
+			System.out.println("ì˜¤ë¥˜ ë°œìƒ!");
 			e.printStackTrace();
-			System.out.println("°Ô½Ã±Û ¼öÁ¤ Áß ¿À·ù°¡ ¹ß»ıÇß½À´Ï´Ù.");
+			System.out.println("ê²Œì‹œê¸€ ìˆ˜ì • ì¤‘ ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤.");
 			return "redirect:/error";
 		}
 	}
 
+	// ëŒ“ê¸€ ì‘ì„± ì²˜ë¦¬
 	@PostMapping("/commentWrite")
 	@ResponseBody
 	public Map<String, Object> saveCommentWrite(@ModelAttribute CommentVO commentvo, long postNum, HttpSession session)
@@ -231,23 +234,23 @@ public class WriteController {
 		MemberVO loginUser = (MemberVO) session.getAttribute("loginUser");
 		if (loginUser == null) {
 			result.put("success", false);
-			result.put("message", "·Î±×ÀÎÀÌ ÇÊ¿äÇÕ´Ï´Ù.");
+			result.put("message", "ë¡œê·¸ì¸ì´ í•„ìš”í•©ë‹ˆë‹¤.");
 			return result;
 		}
 		commentvo.setUserId(loginUser.getUserId());
 		commentvo.setPostNum(postNum);
 
-		// ¡Ú depth°¡ nullÀÌ¸é 0À¸·Î ¼¼ÆÃ (¾ÈÀüÀåÄ¡)
+		// ë§Œì•½ depthê°€ nullì´ë©´ 0ìœ¼ë¡œ ì„¤ì • (ê¸°ë³¸ê°’ì²˜ë¦¬)
 		if (commentvo.getDepth() == null) {
 			commentvo.setDepth(0);
 		}
 
-		// ÃÖ»óÀ§ ´ñ±ÛÀÌ¸é parentCommentId¸¦ null·Î ¼¼ÆÃÇÏ°í depthµµ 0À¸·Î
+		// ìµœìƒìœ„ ëŒ“ê¸€ì´ë©´ parentCommentIdë¥¼ nullë¡œ ì„¤ì •í•˜ê³  depthë¥¼ 0ìœ¼ë¡œ
 		if (commentvo.getParentCommentId() == null || commentvo.getParentCommentId() == 0) {
 			commentvo.setParentCommentId(null);
 			commentvo.setDepth(0);
 		} else {
-			commentvo.setDepth(1); // ´ë´ñ±ÛÀÌ¸é 1
+			commentvo.setDepth(1); // ë‹µê¸€ì´ë©´ 1
 		}
 
 		try {
@@ -255,23 +258,24 @@ public class WriteController {
 			result.put("success", true);
 		} catch (Exception e) {
 			result.put("success", false);
-			result.put("message", "´ñ±Û µî·Ï ½ÇÆĞ: " + e.getMessage());
+			result.put("message", "ëŒ“ê¸€ ë“±ë¡ ì‹¤íŒ¨: " + e.getMessage());
 			e.printStackTrace();
 		}
 		return result;
 	}
 
+	// ëŒ“ê¸€ ëª©ë¡ ì¡°íšŒ
 	@GetMapping("/commentSection")
 	public String getCommentList(@RequestParam Long postNum, Model model) {
 		List<CommentVO> commentList = writeService.getComments(postNum);
 
-		// ´ñ±Û/´ë´ñ±Û depth º¸Á¤
+		// ë¶€ëª¨/ìì‹ depth ì„¤ì •
 		for (CommentVO comment : commentList) {
 
 			if (comment.getParentCommentId() == null) {
-				comment.setDepth(0); // ´ñ±Û(ÃÖ»óÀ§)
+				comment.setDepth(0); // ë¶€ëª¨(ìµœìƒìœ„)
 			} else {
-				comment.setDepth(1); // ´ë´ñ±Û(´ä±Û)
+				comment.setDepth(1); // ìì‹(ë‹µê¸€)
 			}
 			System.out.println("commentId: " + comment.getCommentId() + ", parent: " + comment.getParentCommentId()
 					+ ", depth: " + comment.getDepth());
@@ -281,57 +285,72 @@ public class WriteController {
 		return "getuseds/commentSection";
 	}
 
+	// ëŒ“ê¸€ ì‚­ì œ ì²˜ë¦¬
 	@PostMapping("/deleteComment")
-	@ResponseBody // @ResponseBody Ãß°¡ ±ÇÀå
+	@ResponseBody // @ResponseBody ì¶”ê°€ í•„ìš”
 	public Map<String, Object> deleteComment(@RequestParam("commentId") int commentId, HttpSession session) {
 		Map<String, Object> response = new HashMap<>();
 		MemberVO loginUser = (MemberVO) session.getAttribute("loginUser");
 
 		if (loginUser == null) {
 			response.put("success", false);
-			response.put("message", "·Î±×ÀÎÀÌ ÇÊ¿äÇÕ´Ï´Ù.");
+			response.put("message", "ë¡œê·¸ì¸ì´ í•„ìš”í•©ë‹ˆë‹¤.");
 			return response;
 		}
 
 		try {
-			// ¼­ºñ½º È£Ãâ ½Ã userId Àü´Ş (Áß¿ä)
+			// ì„œë¹„ìŠ¤ í˜¸ì¶œ ì‹œ userId ì „ë‹¬
 			boolean deleteSuccess = writeService.deleteComment(commentId, loginUser.getUserId());
 
 			if (deleteSuccess) {
 				response.put("success", true);
-				response.put("message", "´ñ±ÛÀÌ ¼º°øÀûÀ¸·Î »èÁ¦µÇ¾ú½À´Ï´Ù.");
+				response.put("message", "ëŒ“ê¸€ì´ ì„±ê³µì ìœ¼ë¡œ ì‚­ì œë˜ì—ˆìŠµë‹ˆë‹¤.");
 			} else {
 				response.put("success", false);
-				response.put("message", "´ñ±Û »èÁ¦¿¡ ½ÇÆĞÇß½À´Ï´Ù."); // ½ÇÁ¦ ½ÇÆĞ ¿øÀÎ¿¡ µû¶ó ¸Ş½ÃÁö Á¶Á¤
+				response.put("message", "ëŒ“ê¸€ ì‚­ì œì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤."); // ê¶Œí•œ ì—†ìŒ ë˜ëŠ” ë‹¤ë¥¸ ë©”ì‹œì§€ í‘œì‹œ
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			response.put("success", false);
-			response.put("message", "´ñ±Û »èÁ¦ Áß ¿À·ù°¡ ¹ß»ıÇß½À´Ï´Ù: " + e.getMessage());
+			response.put("message", "ëŒ“ê¸€ ì‚­ì œ ì¤‘ ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤: " + e.getMessage());
 		}
 		return response;
 	}
 
+	// ëŒ“ê¸€ ìˆ˜ì • ì²˜ë¦¬
 	@PostMapping("/updateComment")
 	@ResponseBody
-	public Map<String, Object> updateComment(@RequestBody CommentVO commentVO) {
+	public Map<String, Object> updateComment(@RequestBody CommentVO commentvo) {
 		Map<String, Object> result = new HashMap<>();
 		try {
-			boolean success = writeService.updateComment(commentVO.getCommentId(), commentVO.getContent(),
-					commentVO.getPostNum());
+			boolean success;
+
+			if (commentvo.getDepth() == 0) {
+				// ì¼ë°˜ ëŒ“ê¸€ ìˆ˜ì •
+				success = writeService.updateComment(commentvo.getCommentId(),
+						commentvo.getContent(), commentvo.getPostNum());
+				System.out.println("ì¼ë°˜ ëŒ“ê¸€ ìˆ˜ì • - commentId: " + commentvo.getCommentId());
+			} else {
+				// ë‹µê¸€ ìˆ˜ì • (í•„ìš”ì‹œ ë³„ë„ ë©”ì†Œë“œ ì‚¬ìš©)
+				success = writeService.updateReply(commentvo.getCommentId(),
+						commentvo.getContent(), commentvo.getPostNum());
+				System.out.println("ë‹µê¸€ ìˆ˜ì • - commentId: " + commentvo.getCommentId());
+			}
+
 			result.put("success", success);
 			if (success) {
-				result.put("message", "´ñ±Û ¼öÁ¤ÀÌ ¿Ï·áµÇ¾ú½À´Ï´Ù.");
+				result.put("message", "ëŒ“ê¸€ ìˆ˜ì •ì´ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤.");
 			} else {
-				result.put("message", "´ñ±Û ¼öÁ¤¿¡ ½ÇÆĞÇß½À´Ï´Ù. ÇØ´ç ´ñ±ÛÀ» Ã£À» ¼ö ¾ø°Å³ª ±ÇÇÑÀÌ ¾ø½À´Ï´Ù.");
+				result.put("message", "ëŒ“ê¸€ ìˆ˜ì •ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤. í•´ë‹¹ ëŒ“ê¸€ì„ ì°¾ì„ ìˆ˜ ì—†ê±°ë‚˜ ê¶Œí•œì´ ì—†ìŠµë‹ˆë‹¤.");
 			}
 		} catch (Exception e) {
 			result.put("success", false);
-			result.put("message", "¼­¹ö ¿À·ù: " + e.getMessage());
+			result.put("message", "ìˆ˜ì • ì‹¤íŒ¨: " + e.getMessage());
 		}
 		return result;
 	}
 
+	// ëŒ€ëŒ“ê¸€ ì‘ì„± ì²˜ë¦¬
 	@PostMapping("/commentReply")
 	@ResponseBody
 	public Map<String, Object> saveCommentReply(@RequestBody CommentVO commentvo, HttpSession session) {
@@ -341,19 +360,19 @@ public class WriteController {
 
 		if (loginUser == null) {
 			result.put("success", false);
-			result.put("message", "·Î±×ÀÎÀÌ ÇÊ¿äÇÕ´Ï´Ù.");
+			result.put("message", "ë¡œê·¸ì¸ì´ í•„ìš”í•©ë‹ˆë‹¤.");
 			return result;
 		}
 
 		try {
 			commentvo.setUserId(loginUser.getUserId());
-			// ´ë´ñ±ÛÀÇ depth´Â ºÎ¸ğ ´ñ±ÛÀÇ depth + 1·Î ¼³Á¤ÇÏ°Å³ª, ¼­ºñ½º¿¡¼­ Ã³¸®
+			// ë‹µê¸€ì˜ depthëŠ” ë¶€ëª¨ ëŒ“ê¸€ì˜ depth + 1ë¡œ ì„¤ì •í•˜ê±°ë‚˜, ì„œë¹„ìŠ¤ì—ì„œ ì²˜ë¦¬
 			writeService.addCommentReply(commentvo);
 			result.put("success", true);
-			result.put("message", "´ë´ñ±ÛÀÌ µî·ÏµÇ¾ú½À´Ï´Ù.");
+			result.put("message", "ë‹µê¸€ì´ ë“±ë¡ë˜ì—ˆìŠµë‹ˆë‹¤.");
 		} catch (Exception e) {
 			result.put("success", false);
-			result.put("message", "´ë´ñ±Û µî·Ï ½ÇÆĞ: " + e.getMessage());
+			result.put("message", "ë‹µê¸€ ë“±ë¡ ì‹¤íŒ¨: " + e.getMessage());
 			e.printStackTrace();
 		}
 		return result;

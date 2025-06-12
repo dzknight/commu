@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="www.silver.dao.IF_searchDAO">
+
+    <!-- 작성자로 검색 (페이징) -->
+    <select id="searchByWriter" parameterType="map" resultType="www.silver.vo.BoardVO">
+        SELECT
+            postNum,
+            writer,
+            programmingLanguage,
+            title,
+            content,
+            createdAt,
+            views
+        FROM board
+        WHERE writer LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY postNum DESC
+            LIMIT #{start}, #{limit}
+    </select>
+
+    <!-- 기술스택으로 검색 (페이징) -->
+    <select id="searchByProgrammingLanguage" parameterType="map" resultType="www.silver.vo.BoardVO">
+        SELECT
+            postNum,
+            writer,
+            programmingLanguage,
+            title,
+            content,
+            createdAt,
+            views
+        FROM board
+        WHERE programmingLanguage LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY postNum DESC
+            LIMIT #{start}, #{limit}
+    </select>
+
+    <!-- 작성자 검색 결과 총 개수 -->
+    <select id="countByWriter" parameterType="string" resultType="int">
+        SELECT COUNT(*)
+        FROM board
+        WHERE writer LIKE CONCAT('%', #{keyword}, '%')
+    </select>
+
+    <!-- 기술스택 검색 결과 총 개수 -->
+    <select id="countByProgrammingLanguage" parameterType="string" resultType="int">
+        SELECT COUNT(*)
+        FROM board
+        WHERE programmingLanguage LIKE CONCAT('%', #{keyword}, '%')
+    </select>
+
+</mapper>

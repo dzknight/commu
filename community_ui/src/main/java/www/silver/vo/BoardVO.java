@@ -12,6 +12,7 @@ public class BoardVO {
 	private String saleStatus; // 판매 상태
 	private Integer views; // 조회수
 	private List<String> filename; // 첨부파일 이름
+	private String programmingLanguage;
 	
 	
 	
@@ -68,6 +69,12 @@ public class BoardVO {
 	}
 	public void setFilename(List<String> filename) {
 		this.filename = filename;
+	}
+	public String getProgrammingLanguage() {
+		return programmingLanguage;
+	}
+	public void setProgrammingLanguage(String programmingLanguage) {
+		this.programmingLanguage = programmingLanguage;
 	}
 	
 	
