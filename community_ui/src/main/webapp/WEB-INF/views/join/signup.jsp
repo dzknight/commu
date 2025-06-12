@@ -13,8 +13,10 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <script src="weather.js"></script>
     <!-- JavaScript 파일들 -->
 	<script src="${pageContext.request.contextPath}/resources/js/postmodern-signup.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/weather.js"></script>
 </head>
 
 
@@ -157,7 +159,19 @@
                         <h2 class="section-title">
                             <span class="section-number">02</span>
                             <span class="section-text">어디 살고 있나요?</span>
-                            <div class="title-decoration"></div>
+                            <div class="weather-info">
+                                <dt>현재 기온</dt>
+                                <dd class="temperature"></dd>
+                                <dt>현재 위치</dt>
+                                <dd class="place"></dd>
+                                <dt>사는곳 날씨는</dt>
+                                <dd class="description"></dd>
+                                <!-- 날씨 아이콘 -->
+                                <div class="weather-icon">
+                                    <img class="icon" />
+                                </div>
+                                <button class="button" type="button">수원 날씨는</button>
+                            </div>
                         </h2>
                     </div>
 

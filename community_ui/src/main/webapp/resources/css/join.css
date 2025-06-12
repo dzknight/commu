@@ -1,4 +1,5 @@
-@charset "EUC-KR";
+@charset "UTF-8";
+/* CSS Document */
 
 body {
 	font-family: sans-serif;
@@ -269,4 +270,12 @@ body {
 .ai-convert-options select {
     width: auto;
     margin-left: 10px;
+}
+
+.weather-info {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
 }
