@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="www.silver.dao.IF_newsDAO">
+    <insert id="insertNews" parameterType="www.silver.vo.NewsVO">
+        INSERT IGNORE INTO news
+        (title, originallink, link, description, pubDate, query, category)
+        VALUES
+        (#{title}, #{originallink}, #{link}, #{description}, #{pubDate}, #{query}, #{category})
+    </insert>
+
+    <select id="select2025ItNews" resultType="www.silver.vo.NewsVO" parameterType="map">
+        SELECT * FROM news
+        WHERE YEAR(pubDate) = 2025
+        ORDER BY pubDate DESC
+            LIMIT #{start}, #{pageSize}
+    </select>
+
+    <select id="selectTotalNewsCount" resultType="int">
+        SELECT COUNT(*) FROM news
+        WHERE YEAR(pubDate) = 2025
+    </select>
+
+</mapper>

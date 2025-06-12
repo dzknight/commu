@@ -36,6 +36,8 @@ public interface IF_writeService {
 
 	public void addCommentReply(CommentVO commentVO);
 
+	public boolean updateReply(int commentId, String content, Long postNum);
+
 	
 
 	

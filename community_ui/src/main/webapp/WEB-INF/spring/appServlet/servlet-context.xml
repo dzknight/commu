@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans xmlns="http://www.springframework.org/schema/mvc"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:beans="http://www.springframework.org/schema/beans"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:context="http://www.springframework.org/schema/context"
+             xmlns:task="http://www.springframework.org/schema/task"
+             xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
-
+		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/task https://www.springframework.org/schema/task/spring-task.xsd">
 	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
 	
 	<!-- Enables the Spring MVC @Controller programming model -->
@@ -62,13 +63,18 @@
      
      <!-- /**은 모든 url을 인터셉터에서 잡겠다. 그리고 auth 객체가 잡은 것에 대한 작업을 진행 
      exclude로 설정된 url은 인터셉터에서 잡지 않는다.-->
-	
-	
-	<context:component-scan base-package="www.silver.hom" />
-	<context:component-scan base-package="www.silver.service" />
-	<context:component-scan base-package="www.silver.dao" />
-	<context:component-scan base-package="www.silver.util"/>
-	<context:component-scan base-package="www.silver.mail"/>
+
+
+    <context:component-scan base-package="www.silver.hom" />
+    <context:component-scan base-package="www.silver.service" />
+    <context:component-scan base-package="www.silver.dao" />
+    <context:component-scan base-package="www.silver.util"/>
+    <context:component-scan base-package="www.silver.mail"/>
+    <context:component-scan base-package="www.silver.scheduler"/>
+    <context:component-scan base-package="www.silver.batch"/>
+
+
+    <task:annotation-driven/>
 	
 	
 	
