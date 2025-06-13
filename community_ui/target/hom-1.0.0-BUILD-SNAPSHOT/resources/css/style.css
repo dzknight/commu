@@ -1,0 +1,763 @@
+@charset "UTF-8";
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Noto Sans KR', Arial, sans-serif;
+    background-color: #f8f9fa;
+    color: #343a40;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+/* 헤더 스타일 */
+.header {
+    background-color: #fff;
+    padding: 15px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+}
+.header-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+.logo-img {
+    height: 36px;
+}
+.login-area {
+    display: flex;
+    align-items: center;
+}
+.login-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+}
+.input-field {
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 140px;
+    transition: border-color 0.2s;
+}
+.input-field:focus {
+    outline: none;
+    border-color: #007bff;
+}
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color 0.2s;
+}
+.btn-login, .btn-search, .btn-success {
+    background-color: #007bff;
+}
+.btn-signup, .btn-mypage {
+    background-color: #28a745;
+}
+.btn-logout, .btn-warning {
+    background-color: #dc3545;
+}
+.btn:hover {
+    filter: brightness(90%);
+}
+.btn-postLike {
+    background-color: #ff6b6b;
+}
+.btn-postLike:hover {
+    background-color: #e63946;
+}
+
+/* 검색 바 스타일 */
+.search-bar {
+    background-color: #fff;
+    padding: 12px 0;
+    border-bottom: 1px solid #e9ecef;
+    width: 100%;
+}
+.search-form {
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.select-field {
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 120px;
+}
+.search-form .input-field {
+    width: 100%;
+    max-width: 300px;
+}
+
+/* 네비게이션 스타일 */
+.nav {
+    background-color: #fff;
+    padding: 12px 0;
+    border-bottom: 1px solid #e9ecef;
+    width: 100%;
+}
+.nav-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+.nav-menu {
+    list-style: none;
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+}
+.nav-menu li a {
+    text-decoration: none;
+    color: #495057;
+    font-size: 16px;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+.nav-menu li a:hover {
+    color: #007bff;
+}
+
+/* 메인 콘텐츠 스타일 (index.jsp) */
+.main-content {
+    flex: 3;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.main-title {
+    font-size: 28px;
+    margin-bottom: 24px;
+    color: #343a40;
+}
+.section-title {
+    font-size: 20px;
+    margin-bottom: 16px;
+    color: #343a40;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 8px;
+}
+.overview-content {
+    display: flex;
+    gap: 20px;
+}
+.overview-item {
+    flex: 1;
+    background-color: #f8f9fa;
+    padding: 16px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.overview-item h5 {
+    font-size: 16px;
+    color: #007bff;
+    margin-bottom: 8px;
+}
+.overview-item p {
+    font-size: 14px;
+    color: #6c757d;
+}
+.trending-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 16px;
+}
+.trending-card {
+    background-color: #f8f9fa;
+    padding: 12px;
+    border-radius: 6px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.trending-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.trending-card a {
+    font-size: 14px;
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+}
+.trending-card a:hover {
+    text-decoration: underline;
+}
+.notification-bar {
+    background-color: #e9ecef;
+    padding: 10px;
+    border-radius: 6px;
+    text-align: center;
+    color: #6c757d;
+    font-size: 14px;
+}
+.video-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 16px;
+}
+.video-card {
+    background-color: #f8f9fa;
+    padding: 12px;
+    border-radius: 6px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.video-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.video-card a {
+    font-size: 14px;
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+}
+.video-card a:hover {
+    text-decoration: underline;
+}
+
+/* 게시판 페이지 스타일 (board.jsp) */
+.content-wrapper {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+#boardTable {
+    width: 100%;
+    border: 1px solid #dee2e6;
+    border-collapse: collapse;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+#boardTable th {
+    background-color: #007bff;
+    color: #fff;
+    padding: 12px;
+    border: 1px solid #dee2e6;
+    font-weight: 600;
+}
+#boardTable td {
+    padding: 12px;
+    border: 1px solid #dee2e6;
+    text-align: center;
+}
+#boardTable tr:nth-child(odd) {
+    background-color: #f8f9fa;
+}
+#boardTable tr:nth-child(even) {
+    background-color: #fff;
+}
+#boardTable td:first-child {
+    background-color: transparent !important;
+    color: #343a40;
+}
+#boardTable td a {
+    color: #007bff;
+    text-decoration: none;
+}
+#boardTable td a:hover {
+    text-decoration: underline;
+}
+.empty-message {
+    text-align: center;
+    padding: 20px;
+    color: #6c757d;
+    font-style: italic;
+    font-size: 16px;
+}
+.empty-message a {
+    color: #fff;
+    background-color: #007bff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+}
+.empty-message a:hover {
+    background-color: #0056b3;
+}
+.controls-container {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    margin-top: 15px;
+    align-items: center;
+}
+.write-button {
+    background-color: #007bff;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+.write-button:hover {
+    background-color: #0056b3;
+}
+
+/* 게시글 상세 페이지 스타일 (detailview.jsp) */
+.post-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 24px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.post-title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #343a40;
+}
+.post-title span {
+    color: #007bff;
+    font-weight: bold;
+}
+.post-meta {
+    font-size: 14px;
+    color: #6c757d;
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+.post-meta span {
+    margin-right: 0;
+}
+.post-content {
+    font-size: 16px;
+    line-height: 1.8;
+    margin-bottom: 30px;
+    white-space: pre-wrap;
+    border-left: 4px solid #007bff;
+    padding-left: 12px;
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 6px;
+}
+.post-content span {
+    font-weight: bold;
+    color: #007bff;
+    display: block;
+    margin-bottom: 5px;
+}
+.post-info {
+    margin-top: 20px;
+    font-size: 15px;
+}
+.price {
+    font-weight: bold;
+    color: #007bff;
+}
+.status {
+    color: #28a745;
+    font-weight: bold;
+}
+.actions {
+    margin-top: 30px;
+    display: flex;
+    gap: 15px;
+}
+.actions a {
+    text-decoration: none;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+.actions a:hover {
+    filter: brightness(90%);
+}
+.likebtn {
+    margin-top: 30px;
+    display: flex;
+    gap: 15px;
+    justify-content: flex-start;
+}
+.btn-postLike {
+    padding: 8px 16px;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color 0.2s;
+}
+.post-attach-content {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: flex-start;
+}
+.post-attach-content img {
+    max-width: 150px;
+    max-height: 150px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.post-attach-content img:hover {
+    transform: scale(1.05);
+}
+
+/* 게시글 작성/수정 페이지 스타일 (write.jsp) */
+.write-form-container {
+    background-color: #fff;
+    padding: 30px 40px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    width: 100%;
+    max-width: 600px;
+    margin: 40px auto;
+}
+.write-form-container h2 {
+    text-align: center;
+    color: #343a40;
+    margin-bottom: 25px;
+    font-size: 24px;
+}
+.write-form-container table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.write-form-container td {
+    padding: 12px 0;
+}
+.write-form-container input[type="text"],
+.write-form-container input[type="number"],
+.write-form-container textarea,
+.write-form-container select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color 0.2s;
+}
+.write-form-container input[type="text"]:focus,
+.write-form-container input[type="number"]:focus,
+.write-form-container textarea:focus,
+.write-form-container select:focus {
+    border-color: #007bff;
+    outline: none;
+}
+.write-form-container textarea {
+    resize: vertical;
+    min-height: 150px;
+}
+.write-form-container select {
+    appearance: none;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"><path fill="%23333" d="M6 9l-4-4h8z"/></svg>') no-repeat right 10px center;
+    background-size: 12px;
+    padding-right: 30px;
+}
+.write-form-container input[type="file"] {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 14px;
+}
+
+/* 페이지네이션 스타일 */
+.pagination {
+    margin-top: 24px;
+    text-align: center;
+}
+.pagination a {
+    margin: 0 8px;
+    padding: 6px 12px;
+    color: #007bff;
+    text-decoration: none;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+.pagination a:hover:not(.active) {
+    background-color: #e9ecef;
+}
+.pagination span {
+    margin: 0 8px;
+    padding: 6px 12px;
+    background-color: #007bff;
+    color: #fff;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* 푸터 스타일 */
+.footer {
+    background-color: #343a40;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+    margin-top: 40px;
+    width: 100%;
+}
+.footer-links a {
+    color: #adb5bd;
+    margin: 0 12px;
+    text-decoration: none;
+    font-size: 14px;
+}
+.footer-links a:hover {
+    color: #fff;
+}
+.footer p {
+    font-size: 13px;
+    margin-top: 8px;
+    color: #adb5bd;
+}
+
+/* 마이페이지 스타일 (mypage.jsp) */
+#middle {
+    display: flex;
+    width: 100%;
+    max-width: 1280px;
+    margin: 40px auto;
+    padding: 24px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    gap: 20px;
+}
+#my {
+    border: 1px solid #dee2e6;
+    width: 200px;
+    height: 200px;
+    text-align: center;
+    border-radius: 6px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+#name {
+    margin-top: 20px;
+    display: block;
+    font-size: 16px;
+    font-weight: bold;
+    color: #343a40;
+}
+#update {
+    margin-top: 20px;
+    width: 150px;
+    padding: 8px 16px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+#update:hover {
+    background-color: #218838;
+}
+#scrap {
+    border: 1px solid #dee2e6;
+    flex: 1;
+    padding: 16px;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+#data {
+    width: 50px;
+    height: 50px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+#scraptext {
+    color: #007bff;
+    font-size: 16px;
+    font-weight: 500;
+}
+#dawn {
+    display: flex;
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto 40px;
+    padding: 0 24px;
+    gap: 20px;
+}
+#setting {
+    width: 200px;
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+#setting:hover {
+    background-color: #0056b3;
+}
+#dash {
+    border: 1px solid #dee2e6;
+    flex: 1;
+    padding: 16px;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 16px;
+    color: #343a40;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 900px) {
+    .container {
+        flex-direction: column;
+    }
+    .main-content {
+        flex: 1;
+        width: 100%;
+    }
+    .overview-content {
+        flex-direction: column;
+    }
+    .trending-list {
+        grid-template-columns: 1fr;
+    }
+    .video-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .header-inner, .search-form, .login-form {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    .login-form .input-field, .login-form .btn {
+        width: 100%;
+    }
+    .search-form .input-field, .search-form .select-field, .search-form .btn {
+        width: 100%;
+    }
+    .nav-menu {
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+    #boardTable {
+        font-size: 13px;
+    }
+    #boardTable th, #boardTable td {
+        padding: 8px;
+    }
+    .controls-container {
+        justify-content: center;
+    }
+    .pagination a, .pagination span {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+    .write-form-container {
+        padding: 20px;
+        margin: 10px auto;
+    }
+    .write-form-container h2 {
+        font-size: 20px;
+    }
+    .write-form-container input[type="text"],
+    .write-form-container input[type="number"],
+    .write-form-container textarea,
+    .write-form-container select,
+    .write-form-container button {
+        font-size: 13px;
+    }
+    .post-container {
+        margin: 20px auto;
+        padding: 20px;
+    }
+    .post-title {
+        font-size: 24px;
+    }
+    .post-content {
+        font-size: 14px;
+    }
+    .post-meta {
+        font-size: 12px;
+        gap: 10px;
+    }
+    .post-info {
+        font-size: 13px;
+    }
+    .post-attach-content img {
+        max-width: 120px;
+        max-height: 120px;
+    }
+    .actions a, .btn-postLike {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+    #middle {
+        flex-direction: column;
+        margin: 20px auto;
+        padding: 20px;
+    }
+    #my, #scrap, #dash {
+        width: 100%;
+        margin-left: 0;
+    }
+    #dawn {
+        flex-direction: column;
+        margin: 0 auto 20px;
+        padding: 0 20px;
+    }
+    #setting {
+        width: 100%;
+    }
+}

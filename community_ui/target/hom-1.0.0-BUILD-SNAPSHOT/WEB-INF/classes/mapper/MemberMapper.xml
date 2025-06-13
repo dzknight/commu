@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="www.silver.dao.IF_signUpDAO">
+	<!-- 회원 삭제 -->
+    <delete id="deleteMember" parameterType="String">
+        DELETE FROM `sys`.`member` WHERE user_id =#{userid}
+    </delete>
+    
+    <!-- 사용자 정보 조회 -->
+    <select id="getMemberById" parameterType="String" resultType="www.silver.vo.MemberVO">
+        SELECT user_id as `userId`, 
+               user_password as `userPassword`,
+               user_name as `userName`,
+               user_email,
+               birth_date as `birthdate`,
+               reg_date as `regdate`
+               
+        FROM sys.member 
+        WHERE user_id = #{userid}
+    </select>
+    
+	<insert id="insertone" parameterType="www.silver.vo.MemberVO">	
+	INSERT INTO `sys`.`member`
+	 (`user_id`, `user_password`,`user_name` ,`zipcode`, `address`,`detailAddress`,`user_email`,  `user_phone_number` ,  `reg_date`, `birth_date`,`profile_img`) 
+	 VALUES
+ 	 (#{userId},  #{userPassword},#{userName}, #{zipCode},#{address},#{detailAddress}, #{fullEmail}, #{userPhoneNum}, default, #{birthdate}, #{profileImagePath})	
+	</insert>
+
+	<select id="duplicateCheckId" parameterType="String" resultType="int">
+		SELECT COUNT(*)
+		FROM sys.member
+		WHERE user_id = #{userId}
+	</select>
+
+	<select id="userLogin" parameterType="map" resultType="www.silver.vo.MemberVO">
+		SELECT user_id AS userId,
+		user_password AS `userPassword`
+		FROM sys.member
+		WHERE user_id = #{userId}
+		AND user_password = #{userPassword}
+	</select>
+
+    <update id="updateMemberPass" parameterType="www.silver.vo.MemberVO" >
+        UPDATE `sys`.`member`  SET
+            user_password= #{userPassword}
+        WHERE user_id = #{userId}
+    </update>
+    
+    <!-- 회원 정보 수정 -->
+    <update id="updateMember" parameterType="www.silver.vo.MemberVO">
+        UPDATE sys.member 
+    <set>
+        <if test="userName != null and userName != ''">
+            user_name = #{userName},
+        </if>
+        <if test="zipCode != null and zipCode != ''">
+            zipcode = #{zipCode},
+        </if>
+        <if test="address != null and address != ''">
+            address = #{address},
+        </if>
+        <if test="userEmail != null and userEmail != ''">
+            user_email = #{userEmail},
+        </if>
+        <if test="userPhoneNum != null and userPhoneNum != ''">
+            user_phone_number = #{userPhoneNum},
+        </if>
+        <if test="birthdate != null">
+            birth_date = #{birthdate},
+        </if>
+        <if test="detailAddress != null and detailAddress != ''">
+            detailaddress = #{detailAddress},
+        </if>
+        <if test="profile_img != null">
+            profile_img = #{profile_img}
+        </if>
+    </set>
+        WHERE user_id = #{userId}
+    </update>
+
+    <!-- 회원 정보 조회 -->
+    <select id="selectByUserId" parameterType="string" resultType="www.silver.vo.MemberVO">
+        SELECT 
+            user_id as `userId`,
+            user_password as `userPassword`,
+            user_name as `userName`,
+            zipcode,
+            address,
+            user_email as `userEmail`,
+            user_phone_number as `userPhoneNum`,
+            reg_date as `regDate`,
+            birth_date as `birthDate`,
+            profile_img,
+            detailAddress
+        FROM sys.member 
+        WHERE user_id = #{userId}
+    </select>
+    <!-- 이메일 중복 확인 -->
+    <select id="checkEmailDuplicate" parameterType="String" resultType="int">
+        SELECT COUNT(*) FROM sys.member WHERE user_email = #{userEmail}
+    </select>
+	<!-- 이메일로 회원 조회 -->
+    <select id="selectByEmail" parameterType="String" resultType="www.silver.vo.MemberVO">
+        SELECT * FROM sys.member WHERE user_email = #{userEmail}
+    </select>
+</mapper>

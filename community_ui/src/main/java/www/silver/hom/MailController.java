@@ -54,8 +54,8 @@ public class MailController {
     }
     
     // 이메일 전송 처리
-    @PostMapping(value = "/mailsend", 
-            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping(value = "/mailsend")
+    @ResponseBody
     public String mailsend(
     		    @RequestParam(value = "address",required=false,defaultValue = "dzknight@naver.com") String address,
     		    @RequestParam(value = "title",required=false,defaultValue = "회원가입메시지") String title,
